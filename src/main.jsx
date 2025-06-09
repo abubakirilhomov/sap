@@ -11,15 +11,17 @@ import {
 } from 'react-router-dom';
 import Dashboard from './pages/Dashboard/Dashboard.jsx';
 import Profile from './pages/Profile/Profile.jsx';
-import Publications from './pages/Publications/Publications.jsx';
+import Posts from './pages/Posts/Posts.jsx';
 import Shop from './pages/Shop/Shop.jsx';
 import Login from './pages/Login/Login.jsx';
+import Clubs from './pages/Clubs/Clubs.jsx';
 import usePrivateRoute from './hooks/PrivateRoute.jsx';
 
 const ProtectedDashboard = usePrivateRoute(Dashboard);
 const ProtectedProfile = usePrivateRoute(Profile);
-const ProtectedPublications = usePrivateRoute(Publications);
+const ProtectedPosts = usePrivateRoute(Posts);
 const ProtectedShop = usePrivateRoute(Shop);
+const ProtectedClubs = usePrivateRoute(Clubs);
 
 const router = createBrowserRouter([
   {
@@ -35,19 +37,23 @@ const router = createBrowserRouter([
         element: <ProtectedProfile />,
       },
       {
-        path: '/publications',
-        element: <ProtectedPublications />,
+        path: '/posts',
+        element: <ProtectedPosts />,
       },
       {
         path: '/shop',
         element: <ProtectedShop />,
       },
       {
-        path: '/login',
-        element: <Login />,
+        path: '/clubs',
+        element: <ProtectedClubs />,
       },
     ],
   },
+    {
+      path: '/login',
+      element: <Login />,
+    },
 ]);
 
 createRoot(document.getElementById('root')).render(

@@ -1,35 +1,74 @@
 import { createSlice } from '@reduxjs/toolkit';
 
 const initialState = {
-  user: null,
-  isAuthenticated: true,
+  userInfo: null,
+  role: null,
+  accessToken: null,
+  refreshToken: null,
   loading: false,
   error: null,
+  isAuthenticated: false
 };
 
 const authSlice = createSlice({
   name: 'auth',
   initialState,
   reducers: {
-    loginStart(state) {
+    loginStart: (state) => {
       state.loading = true;
       state.error = null;
     },
-    loginSuccess(state, action) {
-      state.user = action.payload;
+    loginSuccess: (state, action) => {
+      const { userInfo, role, accessToken, refreshToken } = action.payload;
+      state.loading = false;
+      state.userInfo = userInfo;
+      state.role = role;
+      state.accessToken = accessToken;
+      state.refreshToken = refreshToken;
+      state.error = null;
       state.isAuthenticated = true;
-      state.loading = false;
+
+      localStorage.setItem('accessToken', accessToken);
+      localStorage.setItem('refreshToken', refreshToken);
+      localStorage.setItem('role', role);
+      localStorage.setItem('isAuthenticated', true);
     },
-    loginFailure(state, action) {
+    loginFailure: (state, action) => {
+      state.loading = false;
       state.error = action.payload;
-      state.loading = false;
     },
-    logout(state) {
-      state.user = null;
+    updateAccessToken: (state, action) => {
+      state.accessToken = action.payload;
+      localStorage.setItem('accessToken', action.payload);
+    },
+    restoreAuth: (state, action) => {
+      state.userInfo = action.payload.userInfo;
+      state.role = action.payload.role;
+    },
+    logout: (state) => {
+      state.userInfo = null;
+      state.role = null;
+      state.accessToken = null;
+      state.refreshToken = null;
+      state.loading = false;
+      state.error = null;
       state.isAuthenticated = false;
+      
+      localStorage.removeItem('isAuthenticated');
+      localStorage.removeItem('accessToken');
+      localStorage.removeItem('refreshToken');
+      localStorage.removeItem('role');
     },
   },
 });
 
-export const { loginStart, loginSuccess, loginFailure, logout } = authSlice.actions;
+export const {
+  loginStart,
+  loginSuccess,
+  loginFailure,
+  updateAccessToken,
+  restoreAuth,
+  logout,
+} = authSlice.actions;
+
 export default authSlice.reducer;
