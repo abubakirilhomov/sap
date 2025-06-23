@@ -16,6 +16,7 @@ import Shop from './pages/Shop/Shop.jsx';
 import Login from './pages/Login/Login.jsx';
 import Clubs from './pages/Clubs/Clubs.jsx';
 import usePrivateRoute from './hooks/PrivateRoute.jsx';
+import Rating from './pages/Rating/Rating.jsx';
 
 const ProtectedDashboard = usePrivateRoute(Dashboard);
 const ProtectedProfile = usePrivateRoute(Profile);
@@ -47,6 +48,10 @@ const router = createBrowserRouter([
       {
         path: '/clubs',
         element: <ProtectedClubs />,
+      },
+      {
+        path: '/users/rating',
+        element: <Rating />,
       },
     ],
   },

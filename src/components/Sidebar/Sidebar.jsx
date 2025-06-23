@@ -56,7 +56,7 @@ const Sidebar = () => {
   ];
 
   return (
-    <aside className="w-2/12 h-screen bg-base-200 p-4 shadow-lg border-r border-base-300">
+    <aside className="w-2/12 min-w-2/12 h-screen bg-base-200 p-4 shadow-lg border-r border-base-300">
       <nav className="flex flex-col h-full justify-between">
         <div>
           <div onClick={() => navigate('/profile')} className="flex flex-col items-center mb-4">

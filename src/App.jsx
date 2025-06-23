@@ -54,7 +54,7 @@ function App() {
       {!isMobile && <Sidebar />}
       <div className="flex flex-col flex-1">
         <Navbar />
-        <div className="p-4 max-h-[90vh] overflow-y-auto">
+        <div className="py-4 max-h-[90vh] overflow-y-auto">
           <Outlet />
         </div>
         {isMobile && <MobileNav />}
