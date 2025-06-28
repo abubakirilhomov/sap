@@ -13,7 +13,10 @@ function App() {
   const { accessToken, refreshToken, user, role } = useSelector((state) => state.auth);
   const isRehydrated = useSelector((state) => state.auth._persist?.rehydrated || false);
   const baseUrl = import.meta.env.VITE_API_URL;
-
+  const isAuthenticated = useSelector((state) => state.auth.isAuthenticated);
+  console.log('PrivateRoute', isAuthenticated,);
+  const user2 = useSelector((state) => state.auth);
+  console.log('user2', user2);
   const getApiEndpoint = (role) => {
     switch (role) {
       case 'club':

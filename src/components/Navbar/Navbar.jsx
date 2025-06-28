@@ -10,9 +10,9 @@ const gradeColors = {
 };
 
 const Navbar = () => {
-  const user = useSelector((state) => state.auth.userInfo[0]);
+  const user = useSelector((state) => state?.auth?.userInfo === null ? null : state?.auth?.userInfo[0]);
   const [imgError, setImgError] = useState(false);
-  const gradeName = user && user.grade && user.grade.grade_name ? user.grade.grade_name : "Default";
+  const gradeName = user && user?.grade && user?.grade?.grade_name ? user?.grade?.grade_name : "Default";
   const gradeColor = gradeColors[gradeName] || gradeColors.Default;
 
   return (

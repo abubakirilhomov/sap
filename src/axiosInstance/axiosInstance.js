@@ -1,6 +1,7 @@
 import axios from 'axios';
 import { store } from '../redux/store';
-import { updateAccessToken, logout } from '../redux/slices/authSlice';
+import { refreshAccessToken } from '../redux/slices/authThunk';
+import { logout } from '../redux/slices/authSlice';
 
 const instance = axios.create({
   baseURL: import.meta.env.VITE_API_URL,
@@ -9,64 +10,64 @@ const instance = axios.create({
   },
 });
 
-// === REQUEST INTERCEPTOR ===
 instance.interceptors.request.use((config) => {
-  const token = store.getState().auth.accessToken;
+  const state = store.getState();
+  const token = state.auth.accessToken;
   if (token) {
     config.headers.Authorization = `Bearer ${token}`;
   }
   return config;
-}, (error) => {
-  return Promise.reject(error);
 });
 
-// === RESPONSE INTERCEPTOR ===
+let isRefreshing = false;
+let failedQueue = [];
+
+const processQueue = (error, token = null) => {
+  failedQueue.forEach((prom) => {
+    if (error) {
+      prom.reject(error);
+    } else {
+      prom.resolve(token);
+    }
+  });
+  failedQueue = [];
+};
+
 instance.interceptors.response.use(
-  response => response,
+  (response) => response,
   async (error) => {
     const originalRequest = error.config;
     const status = error.response?.status;
 
-    // --- Попытка обновить токен только один раз ---
     if (status === 401 && !originalRequest._retry) {
-      originalRequest._retry = true;
-
-      const refreshToken = store.getState().auth.refreshToken;
-
-      if (!refreshToken) {
-        store.dispatch(logout());
-        window.location.href = '/login';
-        return Promise.reject(error);
+      if (isRefreshing) {
+        return new Promise((resolve, reject) => {
+          failedQueue.push({ resolve, reject });
+        })
+          .then((token) => {
+            originalRequest.headers.Authorization = `Bearer ${token}`;
+            return instance(originalRequest);
+          })
+          .catch((err) => Promise.reject(err));
       }
+
+      originalRequest._retry = true;
+      isRefreshing = true;
 
       try {
-        const response = await axios.post(
-          `${import.meta.env.VITE_API_URL}/api/v1/refresh/`,
-          { refresh_token: refreshToken },
-          {
-            headers: { 'Content-Type': 'application/json' }
-          }
-        );
+        const action = await store.dispatch(refreshAccessToken());
+        const newToken = action.payload;
 
-        const newAccessToken = response.data.access_token;
-        store.dispatch(updateAccessToken(newAccessToken));
-
-        // Повторный запрос с новым токеном
-        originalRequest.headers.Authorization = `Bearer ${newAccessToken}`;
+        originalRequest.headers.Authorization = `Bearer ${newToken}`;
+        processQueue(null, newToken);
         return instance(originalRequest);
-
       } catch (refreshError) {
-        // Если не удалось обновить — принудительный выход
+        processQueue(refreshError, null);
         store.dispatch(logout());
-        window.location.href = '/login';
         return Promise.reject(refreshError);
+      } finally {
+        isRefreshing = false;
       }
-    }
-
-    // Обработка 403 и прочих случаев: если явно запрещено
-    if (status === 403) {
-      store.dispatch(logout());
-      window.location.href = '/login';
     }
 
     return Promise.reject(error);

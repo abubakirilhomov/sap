@@ -1,24 +1,15 @@
-import React from 'react';
-import { useSelector } from 'react-redux';
-import { Navigate, useLocation } from 'react-router-dom';
+import React from "react";
+import { useSelector } from "react-redux";
+import { Navigate, useLocation } from "react-router-dom";
 
-const usePrivateRoute = (Component) => {
-  const PrivateRoute = (props) => {
-    const isAuthenticated = useSelector((state) => state.auth.isAuthenticated);
-    const isRehydrated = useSelector((state) => state.auth._persist.rehydrated);
-    const location = useLocation();
-    if (!isRehydrated) {
-      return <div>Loading...</div>;
-    }
+const PrivateRoute = ({ children }) => {
+  const isAuthenticated = useSelector((state) => state.auth.isAuthenticated);
 
-    return isAuthenticated ? (
-      <Component />
-    ) : (
-      <Navigate to="/login" state={{ from: location }} replace />
-    );
-  };
-
-  return PrivateRoute;
+  return isAuthenticated ? (
+    children
+  ) : (
+    <Navigate to="/login" replace />
+  );
 };
 
-export default usePrivateRoute;
+export default PrivateRoute;

@@ -1,4 +1,4 @@
-import { createSlice } from '@reduxjs/toolkit';
+import { createSlice } from "@reduxjs/toolkit";
 
 const initialState = {
   userInfo: null,
@@ -7,11 +7,11 @@ const initialState = {
   refreshToken: null,
   loading: false,
   error: null,
-  isAuthenticated: false
+  isAuthenticated: false,
 };
 
 const authSlice = createSlice({
-  name: 'auth',
+  name: "auth",
   initialState,
   reducers: {
     loginStart: (state) => {
@@ -28,10 +28,10 @@ const authSlice = createSlice({
       state.error = null;
       state.isAuthenticated = true;
 
-      localStorage.setItem('accessToken', accessToken);
-      localStorage.setItem('refreshToken', refreshToken);
-      localStorage.setItem('role', role);
-      localStorage.setItem('isAuthenticated', true);
+      localStorage.setItem("accessToken", accessToken);
+      localStorage.setItem("refreshToken", refreshToken);
+      localStorage.setItem("role", role);
+      localStorage.setItem("isAuthenticated", true);
     },
     loginFailure: (state, action) => {
       state.loading = false;
@@ -39,12 +39,16 @@ const authSlice = createSlice({
     },
     updateAccessToken: (state, action) => {
       state.accessToken = action.payload;
-      localStorage.setItem('accessToken', action.payload);
+      localStorage.setItem("accessToken", action.payload);
     },
     restoreAuth: (state, action) => {
       state.userInfo = action.payload.userInfo;
       state.role = action.payload.role;
+      state.accessToken = action.payload.accessToken;
+      state.refreshToken = action.payload.refreshToken;
+      state.isAuthenticated = true;
     },
+
     logout: (state) => {
       state.userInfo = null;
       state.role = null;
@@ -53,11 +57,11 @@ const authSlice = createSlice({
       state.loading = false;
       state.error = null;
       state.isAuthenticated = false;
-      
-      localStorage.removeItem('isAuthenticated');
-      localStorage.removeItem('accessToken');
-      localStorage.removeItem('refreshToken');
-      localStorage.removeItem('role');
+
+      localStorage.removeItem("isAuthenticated");
+      localStorage.removeItem("accessToken");
+      localStorage.removeItem("refreshToken");
+      localStorage.removeItem("role");
     },
   },
 });

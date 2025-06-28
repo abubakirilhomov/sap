@@ -6,8 +6,6 @@ import Loading from '../../components/Loading/Loading';
 import CustomSwiper from '../../components/CustomSwiper/CustomSwiper';
 import { useNavigate } from 'react-router-dom';
 import TopUserRatings from '../../components/TopUserRating/TopUserRating'
-import { set } from 'react-hook-form';
-// import EventCard from '../../components/EventCard/EventCard';
 import EventSwiper from '../../components/EventSwiper/EventSwiper';
 
 const Dashboard = () => {
@@ -48,7 +46,7 @@ const Dashboard = () => {
       initial={{ opacity: 0, y: 50 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.8 }}
-      className="p-4 bg-base-200 rounded min-h-screen w-full max-w-6xl mx-auto"
+      className="p-4 bg-base-100 rounded min-h-screen w-full max-w-6xl mx-auto"
     >
       <h1 className="text-4xl font-bold mb-8" role="heading" aria-level="1">
         Dashboard

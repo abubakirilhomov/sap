@@ -16,14 +16,14 @@ const gradeColors = {
 };
 
 const Sidebar = () => {
-  const user = useSelector((state) => state.auth.userInfo[0]);
+  const user = useSelector((state) => state?.auth?.userInfo === null ? null : state?.auth?.userInfo[0]);
   const [imgError, setImgError] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const location = useLocation();
 
-  const gradeName = user && user.grade && user.grade.grade_name ? user.grade.grade_name : "Default";
+  const gradeName = user && user?.grade && user?.grade?.grade_name ? user?.grade?.grade_name : "Default";
   const gradeColor = gradeColors[gradeName] || gradeColors.Default;
 
   const handleLogoutClick = () => {
@@ -66,8 +66,8 @@ const Sidebar = () => {
                   className={`w-24 rounded-full ring ${gradeColor} ring-offset-2 ring-offset-base-100 transition-all`}
                 >
                   <img
-                    src={user.image}
-                    alt={`${user.name || "User"} ${user.surname || ""}`}
+                    src={user?.image}
+                    alt={`${user?.name || "User"} ${user?.surname || ""}`}
                     onError={() => setImgError(true)}
                   />
                 </div>
