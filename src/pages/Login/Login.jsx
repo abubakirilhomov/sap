@@ -42,7 +42,7 @@ const Login = () => {
       const loginResponse = await axios.post(loginUrl, requestData);
       const refreshToken = loginResponse.data.refresh_token;
       const accessToken = loginResponse.data.access_token;
-
+      console.log('Login response:', loginResponse.data);
       localStorage.setItem('refreshToken', refreshToken);
       localStorage.setItem('accessToken', accessToken);
       localStorage.setItem('role', role);

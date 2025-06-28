@@ -1,21 +1,23 @@
-import axios from 'axios';
-import { store } from '../redux/store';
-import { refreshAccessToken } from '../redux/slices/authThunk';
-import { logout } from '../redux/slices/authSlice';
+import axios from "axios";
+import { store } from "../redux/store";
+import { refreshAccessToken } from "../redux/slices/authThunk";
+import { logout } from "../redux/slices/authSlice";
 
 const instance = axios.create({
   baseURL: import.meta.env.VITE_API_URL,
   headers: {
-    'Content-Type': 'application/json',
+    "Content-Type": "application/json",
   },
 });
 
 instance.interceptors.request.use((config) => {
   const state = store.getState();
   const token = state.auth.accessToken;
-  if (token) {
+  if (token && typeof token === "string" && token.trim()) {
     config.headers.Authorization = `Bearer ${token}`;
   }
+  console.log("Request Config:", config);
+  console.log("Access Token:", token);
   return config;
 });
 

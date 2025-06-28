@@ -42,9 +42,6 @@ function App() {
 
       axiosInstance
         .get(infoUrl)
-        .then((res) => {
-          dispatch(restoreAuth({ userInfo: res.data, role }));
-        })
         .catch((error) => {
           console.error('Не удалось получить данные пользователя:', error.response?.data || error.message);
           dispatch(loginFailure('Ошибка авторизации'));
