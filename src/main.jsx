@@ -1,30 +1,27 @@
-  import { StrictMode } from 'react';
-  import { createRoot } from 'react-dom/client';
-  import { Provider } from 'react-redux';
-  import { PersistGate } from 'redux-persist/integration/react';
-  import { store, persistor } from './redux/store';
-  import './index.css';
-  import App from './App.jsx';
-  import {
-    createBrowserRouter,
-    RouterProvider,
-  } from 'react-router-dom';
-  import Dashboard from './pages/Dashboard/Dashboard.jsx';
-  import Profile from './pages/Profile/Profile.jsx';
-  import Posts from './pages/Posts/Posts.jsx';
-  import Shop from './pages/Shop/Shop.jsx';
-  import Login from './pages/Login/Login.jsx';
-  import Clubs from './pages/Clubs/Clubs.jsx';
-  import Rating from './pages/Rating/Rating.jsx';
-  import PrivateRoute from './hooks/PrivateRoute.jsx';
+import { StrictMode } from "react";
+import { createRoot } from "react-dom/client";
+import { Provider } from "react-redux";
+import { PersistGate } from "redux-persist/integration/react";
+import { store, persistor } from "./redux/store";
+import "./index.css";
+import App from "./App.jsx";
+import { createBrowserRouter, RouterProvider } from "react-router-dom";
+import Dashboard from "./pages/Dashboard/Dashboard.jsx";
+import Profile from "./pages/Profile/Profile.jsx";
+import Posts from "./pages/Posts/Posts.jsx";
+import Shop from "./pages/Shop/Shop.jsx";
+import Login from "./pages/Login/Login.jsx";
+import Clubs from "./pages/Clubs/Clubs.jsx";
+import Rating from "./pages/Rating/Rating.jsx";
+import PrivateRoute from "./hooks/PrivateRoute.jsx";
 
 const router = createBrowserRouter([
   {
-    path: '/',
+    path: "/",
     element: <App />,
     children: [
       {
-        path: '/',
+        path: "/",
         element: (
           <PrivateRoute>
             <Dashboard />
@@ -32,7 +29,7 @@ const router = createBrowserRouter([
         ),
       },
       {
-        path: '/profile',
+        path: "/profile",
         element: (
           <PrivateRoute>
             <Profile />
@@ -40,7 +37,7 @@ const router = createBrowserRouter([
         ),
       },
       {
-        path: '/posts',
+        path: "/posts",
         element: (
           <PrivateRoute>
             <Posts />
@@ -48,7 +45,7 @@ const router = createBrowserRouter([
         ),
       },
       {
-        path: '/shop',
+        path: "/shop",
         element: (
           <PrivateRoute>
             <Shop />
@@ -56,7 +53,7 @@ const router = createBrowserRouter([
         ),
       },
       {
-        path: '/clubs',
+        path: "/clubs",
         element: (
           <PrivateRoute>
             <Clubs />
@@ -64,23 +61,25 @@ const router = createBrowserRouter([
         ),
       },
       {
-        path: '/users/rating',
+        path: "/users/rating",
         element: <Rating />,
       },
     ],
   },
   {
-    path: '/login',
+    path: "/login",
     element: <Login />,
   },
 ]);
 
-  createRoot(document.getElementById('root')).render(
-    <StrictMode>
-      <Provider store={store}>
-        <PersistGate loading={null} persistor={persistor}>
-          <RouterProvider router={router} />
-        </PersistGate>
-      </Provider>
-    </StrictMode>,
-  );
+document.title = import.meta.env.VITE_APP_TITLE
+
+createRoot(document.getElementById("root")).render(
+  <StrictMode>
+    <Provider store={store}>
+      <PersistGate loading={null} persistor={persistor}>
+        <RouterProvider router={router} />
+      </PersistGate>
+    </Provider>
+  </StrictMode>
+);

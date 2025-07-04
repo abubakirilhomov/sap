@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { Outlet } from 'react-router-dom';
 import Sidebar from './components/Sidebar/Sidebar';
@@ -8,15 +8,15 @@ import axiosInstance from './axiosInstance/axiosInstance';
 import { restoreAuth, loginFailure } from './redux/slices/authSlice';
 
 function App() {
-  const [isMobile, setIsMobile] = useState(window.innerWidth < 768);
   const dispatch = useDispatch();
   const { accessToken, refreshToken, user, role } = useSelector((state) => state.auth);
   const isRehydrated = useSelector((state) => state.auth._persist?.rehydrated || false);
   const baseUrl = import.meta.env.VITE_API_URL;
   const isAuthenticated = useSelector((state) => state.auth.isAuthenticated);
-  console.log('PrivateRoute', isAuthenticated,);
+  console.log('PrivateRoute', isAuthenticated);
   const user2 = useSelector((state) => state.auth);
   console.log('user2', user2);
+
   const getApiEndpoint = (role) => {
     switch (role) {
       case 'club':
@@ -28,12 +28,6 @@ function App() {
         return null;
     }
   };
-
-  useEffect(() => {
-    const handleResize = () => setIsMobile(window.innerWidth < 768);
-    window.addEventListener('resize', handleResize);
-    return () => window.removeEventListener('resize', handleResize);
-  }, []);
 
   useEffect(() => {
     if (isRehydrated && accessToken && role) {
@@ -51,13 +45,17 @@ function App() {
 
   return (
     <div className="flex min-h-screen">
-      {!isMobile && <Sidebar />}
+      <div className="hidden md:min-w-2/12 md:block">
+        <Sidebar />
+      </div>
       <div className="flex flex-col flex-1">
         <Navbar />
-        <div className="py-4 max-h-[90vh] overflow-y-auto">
+        <div className="py-4 mb-16 md:mb-0 md:max-h-[90vh] overflow-y-auto">
           <Outlet />
         </div>
-        {isMobile && <MobileNav />}
+        <div className="block md:hidden">
+          <MobileNav />
+        </div>
       </div>
     </div>
   );

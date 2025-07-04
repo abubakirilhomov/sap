@@ -20,7 +20,7 @@ const TopUserRatings = ({ ratings = [], onClick }) => {
 
   return (
     <motion.div
-      className="p-4 sm:p-6 rounded-2xl shadow-2xl border w-full max-w-[20rem] sm:max-w-xs md:max-w-sm lg:max-w-xs relative overflow-hidden"
+      className="p-4 max-w-[350px] sm:p-6 rounded-2xl shadow-2xl border w-full sm:max-w-xs md:max-w-sm lg:max-w-xs relative overflow-hidden"
       role="region"
       aria-label="User Ratings Section"
       initial={{ opacity: 0, y: 40 }}
