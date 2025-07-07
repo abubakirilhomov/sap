@@ -41,13 +41,13 @@ const TopUserRatings = ({ ratings = [], onClick }) => {
           topRatings.map((rating, index) => (
             <motion.li
               key={index}
-              className="flex items-center gap-3 sm:gap-4 bg-base-200/80 rounded-lg px-3 sm:px-4 py-3 hover:bg-base-300/90 cursor-pointer transition-all duration-300"
+              className="flex items-center gap-3 sm:gap-4 bg-base-200/80 rounded-lg md:px-3 sm:px-4 md:py-3 py-1 hover:bg-base-300/90 cursor-pointer transition-all duration-300"
               whileHover={{ scale: 1.03, boxShadow: '0 4px 12px rgba(0, 0, 0, 0.15)' }}
               whileTap={{ scale: 0.98 }}
               onClick={onClick}
             >
               <span
-                className={`${index < 3 ? medalColors[index] : 'badge-primary'} text-base sm:text-3xl w-20 h-20 sm:w-8 sm:h-8 flex items-center justify-center font-bold`}
+                className={`${index < 3 ? medalColors[index] : 'badge-primary'} text-base sm:text-3xl w-20 md:h-20 sm:w-8 sm:h-8 flex items-center justify-center font-bold`}
               >
                 {index < 3 ? (
                   <Medal className="" size={20} />

@@ -19,7 +19,7 @@ const EventSwiperMobile = ({ events }) => {
       >
         {events.length > 0 ? (
           events.map((event, index) => (
-            <SwiperSlide key={index} className="w-full">
+            <SwiperSlide key={index} className="w-full pb-5">
               <EventCard activeEvents={[event]} />
             </SwiperSlide>
           ))

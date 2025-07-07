@@ -58,9 +58,11 @@ const EventCard = ({ activeEvents }) => {
         const isExpanded = expandedEvents[event.id];
 
         return (
-          <div
+          <motion.div
             key={event.id}
-            className="bg-base-300 w-full max-w-md min-h-[20rem] shadow-md rounded-lg overflow-hidden flex flex-col"
+            className="bg-base-300 w-full max-w-md shadow-md rounded-lg overflow-hidden flex flex-col"
+            layout // Enable layout animations for the card
+            transition={{ duration: 0.3, ease: "easeInOut" }}
           >
             <div className="flex items-center gap-4 px-2 pt-2 mb-2">
               <Link to={`/clubs/${event?.club_id?.id}`} className="flex items-center gap-2">
@@ -99,11 +101,11 @@ const EventCard = ({ activeEvents }) => {
               <AnimatePresence>
                 {isExpanded && (
                   <motion.div
-                    initial={{ opacity: 0, y: 10 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    exit={{ opacity: 0, y: 10 }}
+                    initial={{ height: 0, opacity: 0 }}
+                    animate={{ height: "auto", opacity: 1 }}
+                    exit={{ height: 0, opacity: 0 }}
                     transition={{ duration: 0.3, ease: "easeInOut" }}
-                    className="flex flex-col gap-2"
+                    className="flex flex-col gap-2 overflow-hidden"
                   >
                     <p>Event - {event.title || "Untitled Event"}</p>
 
@@ -156,7 +158,7 @@ const EventCard = ({ activeEvents }) => {
                 )}
               </AnimatePresence>
             </div>
-          </div>
+          </motion.div>
         );
       })}
     </div>
