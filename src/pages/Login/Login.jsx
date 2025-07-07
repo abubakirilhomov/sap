@@ -66,7 +66,12 @@ const Login = () => {
         draggable: true,
       });
 
-      navigate('/');
+      // Redirect to external URL for admin, otherwise navigate to home
+      if (role === 'admin') {
+        window.location.href = 'https://sap-admin-99uo.vercel.app';
+      } else {
+        navigate('/');
+      }
     } catch (error) {
       console.error("Login failed:", error.response?.data || error.message);
       dispatch(loginFailure(error.response?.data || error.message));
@@ -204,7 +209,7 @@ const Login = () => {
                 />
               </div>
               {errors[role === 'user' ? 'email' : 'login'] && (
-                <motion.p dimensioni
+                <motion.p
                   className="text-error text-sm mt-1"
                   initial={{ x: 0 }}
                   animate={{ x: [-5, 5, -5, 5, 0], transition: { duration: 0.5 } }}
