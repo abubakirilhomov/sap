@@ -14,13 +14,13 @@ const CustomSwiperMobile = ({ events }) => {
       pagination={{ clickable: true }}
       autoplay={{ delay: 3000, disableOnInteraction: false }}
       modules={[Pagination, Autoplay]}
-      className="w-[300px] h-[250px]"
+      className="w-[300px] h-[120px]"
     >
       {events.length > 0 ? (
         events.map((event, index) => (
           <SwiperSlide key={index}>
             <motion.div
-              className="h-full bg-base-200 p-4 rounded-xl shadow"
+              className="h-full bg-primary p-4 rounded-xl shadow"
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               transition={{ delay: index * 0.1 }}

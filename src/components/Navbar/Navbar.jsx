@@ -16,7 +16,7 @@ const Navbar = () => {
   const gradeColor = gradeColors[gradeName] || gradeColors.Default;
 
   return (
-    <div className="bg-base-200 navbar shadow-sm">
+    <div className="bg-base-200 hidden md:block navbar shadow-sm">
       <div className='navbar-start'>
         <input className='input input-md' placeholder="Search" type="text" />
       </div>

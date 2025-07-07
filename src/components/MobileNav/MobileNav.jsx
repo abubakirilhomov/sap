@@ -12,13 +12,13 @@ const MobileNav = () => {
   ];
 
   return (
-    <div className="dock fixed bottom-0 left-0 right-0 bg-base-100 shadow-lg p-2 flex justify-around md:hidden">
+    <div className="dock fixed bottom-0 left-0 right-0 bg-base-100 shadow-lg p-2 flex items-center justify-center md:hidden">
       {links.map((link) => (
         <NavLink
           key={link.name}
           to={link.path}
           className={({ isActive }) =>
-            `flex flex-col items-center p-2 ${isActive ? 'dock-active text-secondary' : 'text-base-content/70 hover:text-secondary'}`
+            `flex flex-col justify-center items-center p-2 ${isActive ? 'dock-active text-secondary' : 'text-base-content/70 hover:text-secondary'}`
           }
         >
           {link.icon}

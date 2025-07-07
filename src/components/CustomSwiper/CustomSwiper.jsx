@@ -9,7 +9,7 @@ const CustomSwiper = ({ events }) => {
       <div className="hidden  md:block">
         <CustomSwiperDesktop events={events} />
       </div>
-
+{/* aliiyevaa */}
       {/* Mobile only */}
       <div className="block md:hidden">
         <CustomSwiperMobile events={events} />

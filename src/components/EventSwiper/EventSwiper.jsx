@@ -91,7 +91,7 @@ import EventSwiperMobile from './EventSwiperMobile';
 const EventSwiper = ({ events }) => {
   return (
     <>
-      <div className="hidden md:block">
+      <div className="hidden max-w-[750px] md:block">
         <EventSwiperDesktop events={events} />
       </div>
       <div className="block w-[350px] md:hidden">

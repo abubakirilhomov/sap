@@ -48,17 +48,17 @@ const Dashboard = () => {
       transition={{ duration: 0.8 }}
       className="md:p-4 px-1 bg-base-100 rounded md:min-h-screen md:w-full md:max-w-6xl mx-auto"
     >
-      <h1 className="text-4xl font-bold mb-8" role="heading" aria-level="1">
+      <h1 className="text-2xl md:text-4xl ml-5 md:ml-0 font-bold mb-3 md:mb-8" role="heading" aria-level="1">
         Dashboard
       </h1>
 
       {/* Latest News Section */}
       <motion.div
-        className="bg-base-100 p-6 rounded-xl shadow-xl border border-base-300 w-full mb-6"
+        className="bg-base-100 p-6 rounded-xl md:shadow-xl md:border border-base-300 w-full mb-6"
         role="region"
         aria-label="Latest News Section"
       >
-        <h2 className="text-2xl font-semibold mb-4" role="heading" aria-level="2">
+        <h2 className="text-lg md:text-2xl font-semibold mb-4" role="heading" aria-level="2">
           Latest News
         </h2>
         <CustomSwiper events={events} />

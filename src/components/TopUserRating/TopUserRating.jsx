@@ -33,7 +33,7 @@ const TopUserRatings = ({ ratings = [], onClick }) => {
       <div className="absolute inset-0 opacity-50 pointer-events-none" />
 
       <h2 className="text-xl sm:text-2xl font-bold mb-4 text-base-content/90 flex items-center gap-2" role="heading" aria-level="2">
-        <Medal className="w-6 h-6 text-accent" /> Top 5 Champions
+        <Medal className="w-6 h-6 text-primary" /> Top 5 Champions
       </h2>
 
       <ul className="space-y-3">
