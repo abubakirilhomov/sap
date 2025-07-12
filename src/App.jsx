@@ -6,16 +6,14 @@ import Navbar from './components/Navbar/Navbar';
 import MobileNav from './components/MobileNav/MobileNav';
 import axiosInstance from './axiosInstance/axiosInstance';
 import { restoreAuth, loginFailure } from './redux/slices/authSlice';
+import { fetchUserInfo } from './redux/slices/authThunk';
 
 function App() {
   const dispatch = useDispatch();
-  const { accessToken, refreshToken, user, role } = useSelector((state) => state.auth);
+  const { accessToken, role } = useSelector((state) => state.auth);
   const isRehydrated = useSelector((state) => state.auth._persist?.rehydrated || false);
   const baseUrl = import.meta.env.VITE_API_URL;
-  const isAuthenticated = useSelector((state) => state.auth.isAuthenticated);
-  console.log('PrivateRoute', isAuthenticated);
-  const user2 = useSelector((state) => state.auth);
-  console.log('user2', user2);
+  const user = useSelector((state) => state.auth.userInfo?.[0]);
 
   const getApiEndpoint = (role) => {
     switch (role) {
@@ -34,12 +32,27 @@ function App() {
       const infoUrl = getApiEndpoint(role);
       if (!infoUrl) return;
 
-      axiosInstance
-        .get(infoUrl)
-        .catch((error) => {
+      const fetchData = async () => {
+        try {
+          await axiosInstance.get(infoUrl);
+          if (role === 'user') {
+            dispatch(fetchUserInfo());
+          }
+        } catch (error) {
           console.error('Не удалось получить данные пользователя:', error.response?.data || error.message);
           dispatch(loginFailure('Ошибка авторизации'));
-        });
+        }
+      };
+
+      fetchData();
+
+      if (role === 'user') {
+        const interval = setInterval(() => {
+          dispatch(fetchUserInfo());
+        }, 15000);
+
+        return () => clearInterval(interval);
+      }
     }
   }, [isRehydrated, accessToken, role, dispatch]);
 
@@ -49,7 +62,7 @@ function App() {
         <Sidebar />
       </div>
       <div className="flex flex-col flex-1">
-        <Navbar />
+        <Navbar tokens={user?.active_tokens} />
         <div className="py-4 mb-16 md:mb-0 md:max-h-[90vh] overflow-y-auto">
           <Outlet />
         </div>

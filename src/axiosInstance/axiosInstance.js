@@ -16,8 +16,6 @@ instance.interceptors.request.use((config) => {
   if (token && typeof token === "string" && token.trim()) {
     config.headers.Authorization = `Bearer ${token}`;
   }
-  console.log("Request Config:", config);
-  console.log("Access Token:", token);
   return config;
 });
 
@@ -74,6 +72,6 @@ instance.interceptors.response.use(
 
     return Promise.reject(error);
   }
-);
+)
 
 export default instance;

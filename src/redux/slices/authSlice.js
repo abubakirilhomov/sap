@@ -1,4 +1,5 @@
 import { createSlice } from "@reduxjs/toolkit";
+import { fetchUserInfo } from './authThunk';
 
 const initialState = {
   userInfo: null,
@@ -48,7 +49,6 @@ const authSlice = createSlice({
       state.refreshToken = action.payload.refreshToken;
       state.isAuthenticated = true;
     },
-
     logout: (state) => {
       state.userInfo = null;
       state.role = null;
@@ -63,6 +63,11 @@ const authSlice = createSlice({
       localStorage.removeItem("refreshToken");
       localStorage.removeItem("role");
     },
+  },
+  extraReducers: (builder) => {
+    builder.addCase(fetchUserInfo.fulfilled, (state, action) => {
+      state.userInfo = action.payload;
+    });
   },
 });
 

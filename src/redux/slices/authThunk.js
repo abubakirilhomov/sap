@@ -25,6 +25,27 @@ export const loginUser = createAsyncThunk(
   }
 );
 
+export const fetchUserInfo = createAsyncThunk(
+  'auth/fetchUserInfo',
+  async (_, { getState, dispatch, rejectWithValue }) => {
+    const accessToken = getState().auth.accessToken;
+
+    if (!accessToken) {
+      return rejectWithValue('No access token');
+    }
+
+    try {
+      const response = await axios.get('/api/v1/users/userinfo/', {
+        headers: { Authorization: `Bearer ${accessToken}` }
+      });
+
+      return response.data;
+    } catch (err) {
+      return rejectWithValue(err.response?.data || 'Failed to fetch user info');
+    }
+  }
+);
+
 export const refreshAccessToken = createAsyncThunk(
   'auth/refreshAccessToken',
   async (_, { getState, dispatch, rejectWithValue }) => {

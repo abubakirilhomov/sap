@@ -5,15 +5,14 @@ import 'swiper/css';
 import 'swiper/css/pagination';
 import 'swiper/css/navigation';
 import { motion } from 'framer-motion';
-import { ChevronLeft, ChevronRight } from 'lucide-react'; // или любой другой иконпак
+import { ChevronLeft, ChevronRight } from 'lucide-react'
 
 const CustomSwiper = ({ events }) => {
   const prevRef = useRef(null);
   const nextRef = useRef(null);
-  console.log('Events:', events); // Для отладки
+
   return (
     <div className="w-full max-w-6xl mx-auto overflow-hidden px-2 relative">
-      {/* Кнопки навигации */}
       <div className="absolute top-1/2 -left-2 transform -translate-y-1/2 z-10">
         <button
           ref={prevRef}

@@ -2,40 +2,137 @@ import React, { useEffect, useState } from "react";
 import Loading from "../../components/Loading/Loading";
 import axiosInstance from "../../axiosInstance/axiosInstance";
 import { motion } from "framer-motion";
+import ShopContent from "../../components/ShopContent/ShopContent";
+import { useSelector } from "react-redux";
+import { ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+
 const Shop = () => {
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [searchTerm, setSearchTerm] = useState("");
+  const [activeTab, setActiveTab] = useState("products");
+  const [shopHistory, setShopHistory] = useState([]);
+  const [historyLoading, setHistoryLoading] = useState(false);
+  const [historyError, setHistoryError] = useState(null);
+  const user = useSelector((state) => state.auth.userInfo[0]);
+  console.log("User in Shop:", user);
 
   useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const response = await axiosInstance.get("/api/v1/shop/getproducts/");
-        setProducts(response.data);
-        console.log("Products", response.data);
-      } catch (error) {
-        console.error("Error fetching shop data:", error);
-        setError("Failed to load shop data. Please try again later.");
-      } finally {
-        setLoading(false);
-      }
-    };
     fetchData();
   }, []);
 
-  if (loading) return <Loading />;
-  if (error) return <div className="text-error p-6">{error}</div>;
+  useEffect(() => {
+    if (activeTab === "history") {
+      fetchShopHistory();
+    }
+  }, [activeTab]);
+
+  const fetchData = async () => {
+    try {
+      const response = await axiosInstance.get("/api/v1/shop/getproducts/");
+      setProducts(response.data);
+      console.log("Products", response.data);
+    } catch (error) {
+      console.error("Error fetching shop data:", error);
+      setError("Failed to load shop data. Please try again later.");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const fetchShopHistory = async () => {
+    setHistoryLoading(true);
+    setHistoryError(null);
+    try {
+      const response = await axiosInstance.get("/api/v1/shop/shophistory/");
+      setShopHistory(response.data); // Assuming the API returns an array of history items
+      console.log("Shop History", response.data);
+    } catch (error) {
+      console.error("Error fetching shop history:", error);
+      setHistoryError("Failed to load shop history. Please try again later.");
+    } finally {
+      setHistoryLoading(false);
+    }
+  };
 
   return (
     <motion.div
       initial={{ opacity: 0, y: 50 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.8 }}
-      className="p-4 bg-base-100 rounded min-h-screen w-full max-w-6xl mx-auto"
+      className="p-4 bg-gradient-to-br from-base-100 via-base-200 to-base-300 rounded min-h-screen w-full max-w-6xl mx-auto"
     >
+      <ToastContainer
+        position="bottom-right"
+        autoClose={5000}
+        hideProgressBar={false}
+        newestOnTop={false}
+        closeOnClick
+        rtl={false}
+        pauseOnFocusLoss
+        draggable
+        pauseOnHover
+        theme="dark"
+      />
+
       <h1 className="text-4xl font-bold mb-8" role="heading" aria-level="1">
         Shop
       </h1>
+
+      <div className="tabs tabs-boxed mb-6">
+        <button
+          className={`tab ${activeTab === "products" ? "tab-active" : ""}`}
+          onClick={() => setActiveTab("products")}
+        >
+          Products
+        </button>
+        <button
+          className={`tab ${activeTab === "history" ? "tab-active" : ""}`}
+          onClick={() => setActiveTab("history")}
+        >
+          Shop History
+        </button>
+      </div>
+
+      {activeTab === "products" ? (
+        <ShopContent
+          products={products}
+          loading={loading}
+          error={error}
+          setSearchTerm={setSearchTerm}
+        />
+      ) : (
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.5 }}
+          className="bg-base-200 p-6 rounded-lg shadow-md"
+        >
+          <h2 className="text-2xl font-semibold mb-4">Shop History</h2>
+          {historyLoading ? (
+            <div className="text-center py-10">Loading history...</div>
+          ) : historyError ? (
+            <div className="text-error p-6">{historyError}</div>
+          ) : shopHistory.length > 0 ? (
+            <ul className="space-y-4">
+              {shopHistory.map((item) => (
+                <li key={item.id} className="p-4 bg-base-100 rounded-lg shadow-sm">
+                  <p className="font-medium">{item.productName || "Unknown Product"}</p>
+                  <p className="text-sm text-base-content/70">
+                    Date: {item.date || "N/A"} | Cost: ${item.cost || 0}
+                  </p>
+                </li>
+              ))}
+            </ul>
+          ) : (
+            <p className="text-center text-base-content/70">
+              No purchase history available.
+            </p>
+          )}
+        </motion.div>
+      )}
     </motion.div>
   );
 };
