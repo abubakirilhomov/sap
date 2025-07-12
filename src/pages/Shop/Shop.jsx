@@ -6,6 +6,7 @@ import ShopContent from "../../components/ShopContent/ShopContent";
 import { useSelector } from "react-redux";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import ShopHistoryItem from "../../components/ShopHistoryItem/ShopHistoryItem";
 
 const Shop = () => {
   const [products, setProducts] = useState([]);
@@ -17,7 +18,6 @@ const Shop = () => {
   const [historyLoading, setHistoryLoading] = useState(false);
   const [historyError, setHistoryError] = useState(null);
   const user = useSelector((state) => state.auth.userInfo[0]);
-  console.log("User in Shop:", user);
 
   useEffect(() => {
     fetchData();
@@ -47,7 +47,7 @@ const Shop = () => {
     setHistoryError(null);
     try {
       const response = await axiosInstance.get("/api/v1/shop/shophistory/");
-      setShopHistory(response.data); // Assuming the API returns an array of history items
+      setShopHistory(response.data);
       console.log("Shop History", response.data);
     } catch (error) {
       console.error("Error fetching shop history:", error);
@@ -56,7 +56,6 @@ const Shop = () => {
       setHistoryLoading(false);
     }
   };
-
   return (
     <motion.div
       initial={{ opacity: 0, y: 50 }}
@@ -77,7 +76,7 @@ const Shop = () => {
         theme="dark"
       />
 
-      <h1 className="text-4xl font-bold mb-8" role="heading" aria-level="1">
+      <h1 className="md:text-4xl text-2xl font-bold mb-8" role="heading" aria-level="1">
         Shop
       </h1>
 
@@ -112,18 +111,13 @@ const Shop = () => {
         >
           <h2 className="text-2xl font-semibold mb-4">Shop History</h2>
           {historyLoading ? (
-            <div className="text-center py-10">Loading history...</div>
+            <Loading/>
           ) : historyError ? (
             <div className="text-error p-6">{historyError}</div>
           ) : shopHistory.length > 0 ? (
-            <ul className="space-y-4">
+            <ul className="space-y-4 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-2">
               {shopHistory.map((item) => (
-                <li key={item.id} className="p-4 bg-base-100 rounded-lg shadow-sm">
-                  <p className="font-medium">{item.productName || "Unknown Product"}</p>
-                  <p className="text-sm text-base-content/70">
-                    Date: {item.date || "N/A"} | Cost: ${item.cost || 0}
-                  </p>
-                </li>
+                <ShopHistoryItem key={item.id} item={item} />
               ))}
             </ul>
           ) : (

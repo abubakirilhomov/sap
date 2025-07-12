@@ -1,11 +1,11 @@
 import React, { useState } from "react";
 import { motion } from "framer-motion";
 import ShopCard from "../../components/ShopCard/ShopCard";
+import Loading from "../Loading/Loading";
 
 const ShopContent = ({ products, loading, error, setSearchTerm }) => {
   const [searchTerm, setLocalSearchTerm] = useState("");
 
-  // Sync local search term with parent if setSearchTerm is provided
   const handleSearchChange = (e) => {
     const value = e.target.value;
     setLocalSearchTerm(value);
@@ -29,7 +29,7 @@ const ShopContent = ({ products, loading, error, setSearchTerm }) => {
     visible: { opacity: 1, y: 0, transition: { duration: 0.5 } },
   };
 
-  if (loading) return <div className="text-center py-10">Loading...</div>;
+  if (loading) return <Loading/>
   if (error) return <div className="text-error p-6">{error}</div>;
 
   return (

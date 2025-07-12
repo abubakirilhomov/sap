@@ -1,11 +1,14 @@
 import React from "react";
+import { useDispatch } from "react-redux";
 import { motion } from "framer-motion";
 import { BsFillLightningChargeFill } from "react-icons/bs";
 import axiosInstance from "../../axiosInstance/axiosInstance";
 import { toast } from "react-toastify";
+import { fetchUserInfo } from "../../redux/slices/authThunk"; // 👈 Импорт
 import "react-toastify/dist/ReactToastify.css";
 
 const ShopCard = ({ product }) => {
+  const dispatch = useDispatch(); // 👈 Добавить
   const stock = product.quantity;
   const isOutOfStock = stock === 0;
   const isLowStock = stock > 0 && stock <= 5;
@@ -39,26 +42,21 @@ const ShopCard = ({ product }) => {
       const response = await axiosInstance.post("/api/v1/shop/buyproduct/", {
         product_id: product.id,
       });
+
       toast.success("Purchase successful!", {
         position: "bottom-right",
         autoClose: 3000,
-        hideProgressBar: false,
-        closeOnClick: true,
-        pauseOnHover: true,
-        draggable: true,
       });
-      // Optionally update stock or refresh products here (e.g., subtract 1 from stock)
-      // This would require a state update or re-fetch from the parent component
+
+      // 👇 Обновляем информацию о пользователе (включая монеты)
+      dispatch(fetchUserInfo());
+
     } catch (error) {
       const errorMessage = error.response?.data?.error || error.message || "Failed to purchase. Please try again.";
       console.error("Error buying product:", error);
       toast.error(errorMessage, {
         position: "bottom-right",
         autoClose: 3000,
-        hideProgressBar: false,
-        closeOnClick: true,
-        pauseOnHover: true,
-        draggable: true,
       });
     }
   };
