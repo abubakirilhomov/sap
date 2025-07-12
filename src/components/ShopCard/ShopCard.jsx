@@ -64,7 +64,7 @@ const ShopCard = ({ product }) => {
   return (
     <motion.div
       key={product.id}
-      className="bg-base-200 relative p-4 rounded-lg shadow-md hover:shadow-lg transition-shadow duration-300"
+      className="bg-base-300 relative p-4 rounded-lg shadow-md hover:shadow-lg transition-shadow duration-300"
       whileHover={{ scale: 1.05 }}
       whileTap={{ scale: 0.98 }}
     >
