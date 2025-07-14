@@ -14,6 +14,7 @@ import Login from "./pages/Login/Login.jsx";
 import Clubs from "./pages/Clubs/Clubs.jsx";
 import Rating from "./pages/Rating/Rating.jsx";
 import PrivateRoute from "./hooks/PrivateRoute.jsx";
+import QrScanner from "./components/QrScanner/QrScanner.jsx";
 
 const router = createBrowserRouter([
   {
@@ -63,6 +64,10 @@ const router = createBrowserRouter([
       {
         path: "/users/rating",
         element: <Rating />,
+      },
+      {
+        path: "/qr-scanner",
+        element: <QrScanner />,
       },
     ],
   },
