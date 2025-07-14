@@ -204,7 +204,7 @@ const Login = () => {
                     required: role === 'user' ? 'Email is required' : 'Login is required',
                     minLength: { value: 1, message: role === 'user' ? 'Email must be at least 1 character' : 'Login must be at least 1 character' }
                   })}
-                  className="w-full bg-transparent focus:outline-none"
+                  className="w-full bg-transparent text-lg focus:outline-none"
                   placeholder={role === 'user' ? 'Your email' : 'Your login'}
                 />
               </div>
@@ -242,7 +242,7 @@ const Login = () => {
                       message: "Password must be at least 1 character",
                     },
                   })}
-                  className="w-full bg-transparent focus:outline-none"
+                  className="w-full text-lg bg-transparent focus:outline-none"
                   placeholder="••••••"
                 />
               </div>
