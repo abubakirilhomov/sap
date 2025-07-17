@@ -2,11 +2,13 @@ import React from 'react';
 import { NavLink } from 'react-router-dom';
 import { FaHome, FaUser, FaBook } from 'react-icons/fa';
 import { FaBasketShopping } from 'react-icons/fa6';
+import { BsQrCodeScan } from "react-icons/bs";
 
 const MobileNav = () => {
   const links = [
     { name: 'Home', path: '/', icon: <FaHome className="text-xl" /> },
     { name: 'Posts', path: '/posts', icon: <FaBook className="text-xl" /> },
+    { name: 'Scan', path: '/qr-scanner', icon: <BsQrCodeScan className="text-xl" /> },
     { name: 'Shop', path: '/shop', icon: <FaBasketShopping className="text-xl" /> },
     { name: 'Profile', path: '/profile', icon: <FaUser className="text-xl" /> },
   ];
