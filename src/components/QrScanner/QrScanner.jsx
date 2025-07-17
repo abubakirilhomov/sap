@@ -9,8 +9,8 @@ const QrScanner = ({ onScanSuccess, validateQr }) => {
   const [scanResult, setScanResult] = useState(null);
   const html5QrCodeRef = useRef(null);
 
-  const config = { fps: 15, qrbox: { width: 300, height: 300 } };
   useEffect(() => {
+    const config = { fps: 15, qrbox: { width: 300, height: 300 } };
 
     const html5QrCode = new Html5Qrcode("qr-reader");
     html5QrCodeRef.current = html5QrCode;
@@ -19,8 +19,13 @@ const QrScanner = ({ onScanSuccess, validateQr }) => {
       .then((devices) => {
         if (devices && devices.length) {
           setCameras(devices);
-          setCameraId(devices[0].id);
-          startScanning(devices[0].id);
+          // Поиск задней камеры по метке или использование первой доступной
+          const rearCamera = devices.find((cam) =>
+            cam.label?.toLowerCase().includes("back") ||
+            cam.label?.toLowerCase().includes("rear")
+          ) || devices[0];
+          setCameraId(rearCamera.id);
+          startScanning(rearCamera.id);
         } else {
           setError("Камеры не найдены.");
         }
@@ -44,7 +49,7 @@ const QrScanner = ({ onScanSuccess, validateQr }) => {
       setIsScanning(true);
       html5QrCodeRef.current
         .start(
-          { deviceId: { exact: selectedCameraId } },
+          { deviceId: { exact: selectedCameraId }, facingMode: "environment" },
           config,
           (decodedText) => {
             setScanResult(decodedText);
