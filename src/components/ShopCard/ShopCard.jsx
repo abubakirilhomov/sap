@@ -1,17 +1,19 @@
-import React from "react";
+import React, { useState } from "react";
 import { useDispatch } from "react-redux";
 import { motion } from "framer-motion";
 import { BsFillLightningChargeFill } from "react-icons/bs";
 import axiosInstance from "../../axiosInstance/axiosInstance";
 import { toast } from "react-toastify";
-import { fetchUserInfo } from "../../redux/slices/authThunk"; // 👈 Импорт
+import { fetchUserInfo } from "../../redux/slices/authThunk";
 import "react-toastify/dist/ReactToastify.css";
 
 const ShopCard = ({ product }) => {
-  const dispatch = useDispatch(); // 👈 Добавить
+  const dispatch = useDispatch();
   const stock = product.quantity;
   const isOutOfStock = stock === 0;
   const isLowStock = stock > 0 && stock <= 5;
+  const [isImageLoading, setIsImageLoading] = useState(true);
+  const [imageError, setImageError] = useState(false);
 
   let badgeText = "";
   let badgeClass = "";
@@ -39,7 +41,7 @@ const ShopCard = ({ product }) => {
     if (isOutOfStock) return;
 
     try {
-      const response = await axiosInstance.post("/api/v1/shop/buyproduct/", {
+      const response = await axiosInstance.post("/api/v1/shop/buy/", {
         product_id: product.id,
       });
 
@@ -49,7 +51,6 @@ const ShopCard = ({ product }) => {
       });
 
       dispatch(fetchUserInfo());
-
     } catch (error) {
       const errorMessage = error.response?.data?.error || error.message || "Failed to purchase. Please try again.";
       console.error("Error buying product:", error);
@@ -67,11 +68,27 @@ const ShopCard = ({ product }) => {
       whileHover={{ scale: 1.05 }}
       whileTap={{ scale: 0.98 }}
     >
-      <img
-        src={product.img}
-        alt={product.name}
-        className="w-full h-48 object-cover rounded-t-lg mb-4"
-      />
+      {imageError ? (
+        <div className="w-full h-48 bg-gray-200 flex items-center justify-center rounded-t-lg mb-4">
+          <span className="text-gray-500">Image not available</span>
+        </div>
+      ) : (
+        <div className="relative w-full h-48">
+          {isImageLoading && (
+            <div className="absolute inset-0 bg-gray-200 animate-pulse rounded-t-lg" />
+          )}
+          <img
+            src={product.img}
+            alt={product.name}
+            className={`w-full h-48 object-cover rounded-t-lg mb-4 ${isImageLoading ? "opacity-0" : "opacity-100"}`}
+            onLoad={() => setIsImageLoading(false)}
+            onError={() => {
+              setIsImageLoading(false);
+              setImageError(true);
+            }}
+          />
+        </div>
+      )}
       <h2 className="text-xl font-semibold mb-2">{product.name}</h2>
       <p className={`mb-2 ${textColorClass}`}>
         Stock: {stock}

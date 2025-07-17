@@ -9,7 +9,6 @@ import TopUserRatings from '../../components/TopUserRating/TopUserRating';
 import EventSwiper from '../../components/EventSwiper/EventSwiper';
 
 const Dashboard = () => {
-  const { user } = useSelector((state) => state.auth);
   const [events, setEvents] = useState([]);
   const [ratings, setRatings] = useState([]);
   const [activeEvents, setActiveEvents] = useState([]);
@@ -20,9 +19,9 @@ const Dashboard = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const eventsResponse = await axiosInstance.get('/api/v1/events/newslist/');
-        const ratingsResponse = await axiosInstance.get('/api/v1/users/rating/');
-        const activeEventsRes = await axiosInstance.get('/api/v1/events/getactiveevents/');
+        const eventsResponse = await axiosInstance.get('/api/v1/clubs/events/upcoming/');
+        const ratingsResponse = await axiosInstance.get('/api/v1/students/rating/');
+        const activeEventsRes = await axiosInstance.get('/api/v1/clubs/events/today/');
         setEvents(eventsResponse.data);
         setRatings(ratingsResponse.data);
         setActiveEvents(activeEventsRes.data);
@@ -40,7 +39,7 @@ const Dashboard = () => {
   if (error) return <div className="text-error p-6">{error}</div>;
 
   const topRatings = ratings.results.slice(0, 5);
-
+  
   return (
     <motion.div
       initial={{ opacity: 0, y: 50 }}
@@ -52,7 +51,6 @@ const Dashboard = () => {
         Dashboard
       </h1>
 
-      {/* Latest News Section */}
       <motion.div
         className="bg-base-100 p-6 rounded-xl md:shadow-xl md:border border-base-300 w-full mb-6"
         role="region"
@@ -64,7 +62,6 @@ const Dashboard = () => {
         <CustomSwiper events={events} />
       </motion.div>
 
-      {/* Ratings and Active Events Section */}
       <motion.div
         className="flex flex-col md:flex-row gap-6"
         role="region"

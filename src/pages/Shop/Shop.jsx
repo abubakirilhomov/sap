@@ -31,7 +31,7 @@ const Shop = () => {
 
   const fetchData = async () => {
     try {
-      const response = await axiosInstance.get("/api/v1/shop/getproducts/");
+      const response = await axiosInstance.get("/api/v1/shop/student/products/");
       setProducts(response.data);
       console.log("Products", response.data);
     } catch (error) {
@@ -46,7 +46,7 @@ const Shop = () => {
     setHistoryLoading(true);
     setHistoryError(null);
     try {
-      const response = await axiosInstance.get("/api/v1/shop/shophistory/");
+      const response = await axiosInstance.get("/api/v1/shop/history/");
       setShopHistory(response.data);
       console.log("Shop History", response.data);
     } catch (error) {

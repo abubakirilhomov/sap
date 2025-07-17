@@ -33,14 +33,15 @@ export const fetchUserInfo = createAsyncThunk(
     if (!accessToken) {
       return rejectWithValue('No access token');
     }
-
+    console.log('Fetching user info with token:', accessToken);
     try {
-      const response = await axios.get('/api/v1/users/userinfo/', {
+      const response = await axios.get('/api/v1/students/profile/', {
         headers: { Authorization: `Bearer ${accessToken}` }
       });
-
+      console.log(response)
       return response.data;
     } catch (err) {
+      console.error('Error fetching user info:', err);
       return rejectWithValue(err.response?.data || 'Failed to fetch user info');
     }
   }

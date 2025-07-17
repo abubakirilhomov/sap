@@ -15,18 +15,18 @@ const Login = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const [loading, setLoading] = useState(false);
-  const [role, setRole] = useState('user');
+  const [role, setRole] = useState('student');
   const baseUrl = import.meta.env.VITE_API_URL;
 
   const getApiEndpoint = (role) => {
     switch (role) {
       case 'club':
-        return { login: `${baseUrl}/api/v1/clubs/login/`, info: `${baseUrl}/api/v1/clubs/info/` };
+        return { login: `${baseUrl}/api/v1/clubs/auth/login/`, info: `${baseUrl}/api/v1/clubs/info/` };
       case 'admin':
-        return { login: `${baseUrl}/api/v1/admin/login/`, info: null };
-      case 'user':
+        return { login: `${baseUrl}/api/v1/staff/auth/login/`, info: null };
+      case 'student':
       default:
-        return { login: `${baseUrl}/api/v1/users/login/`, info: `${baseUrl}/api/v1/users/userinfo/` };
+        return { login: `${baseUrl}/api/v1/students/auth/login/`, info: `${baseUrl}/api/v1/students/profile/` };
     }
   };
 
@@ -34,7 +34,7 @@ const Login = () => {
     setLoading(true);
     dispatch(loginStart());
     const requestData = {
-      [role === 'user' ? 'email' : 'login']: data[role === 'user' ? 'email' : 'login'],
+      [role === 'student' ? 'email' : 'login']: data[role === 'student' ? 'email' : 'login'],
       password: data.password,
     };
     try {
@@ -66,7 +66,6 @@ const Login = () => {
         draggable: true,
       });
 
-      // Redirect to external URL for admin, otherwise navigate to home
       if (role === 'admin') {
         window.location.href = 'https://sap-admin-99uo.vercel.app';
       } else {
@@ -88,7 +87,6 @@ const Login = () => {
     }
   };
 
-  // Framer Motion variants for animations
   const containerVariants = {
     hidden: { opacity: 0, y: 50 },
     visible: {
@@ -131,7 +129,6 @@ const Login = () => {
         initial="hidden"
         animate="visible"
       >
-        {/* Form Section */}
         <motion.div
           className="flex flex-col justify-center p-6 sm:p-8 lg:p-12 lg:w-1/2"
           variants={itemVariants}
@@ -149,17 +146,16 @@ const Login = () => {
             Enter your login details
           </motion.p>
 
-          {/* DaisyUI Radio Tabs for Role Selection */}
           <motion.div variants={itemVariants} className="tabs bg-base-100/30 w-full rounded-2xl p-2 justify-between tabs-boxed mb-6">
             <input
               type="radio"
               name="role_tabs"
               className={`tab rounded-2xl font-semibold flex-1 text-sm sm:text-base duration-300 ${
-                role === 'user' ? 'tab-active bg-secondary/70 text-white shadow-md border-2 border-secondary' : 'bg-base-200 text-base-content/70 hover:bg-base-300'
+                role === 'student' ? 'tab-active bg-secondary/70 text-white shadow-md border-2 border-secondary' : 'bg-base-200 text-base-content/70 hover:bg-base-300'
               }`}
-              aria-label="User"
-              checked={role === 'user'}
-              onChange={() => setRole('user')}
+              aria-label="Student"
+              checked={role === 'student'}
+              onChange={() => setRole('student')}
             />
             <input
               type="radio"
@@ -184,10 +180,9 @@ const Login = () => {
           </motion.div>
 
           <div className="space-y-6">
-            {/* Email/Login Input with Icon */}
             <motion.div variants={itemVariants} className="relative">
-              <label htmlFor={role === 'user' ? 'email' : 'login'} className="block mb-2 text-sm font-medium text-base-content">
-                {role === 'user' ? 'Your email' : 'Your login'}
+              <label htmlFor={role === 'student' ? 'email' : 'login'} className="block mb-2 text-sm font-medium text-base-content">
+                {role === 'student' ? 'Your email' : 'Your login'}
               </label>
               <div className="input input-bordered w-full flex items-center gap-2 bg-base-100/70">
                 <motion.div
@@ -199,27 +194,26 @@ const Login = () => {
                 </motion.div>
                 <input
                   type="text"
-                  id={role === 'user' ? 'email' : 'login'}
-                  {...register(role === 'user' ? 'email' : 'login', { 
-                    required: role === 'user' ? 'Email is required' : 'Login is required',
-                    minLength: { value: 1, message: role === 'user' ? 'Email must be at least 1 character' : 'Login must be at least 1 character' }
+                  id={role === 'student' ? 'email' : 'login'}
+                  {...register(role === 'student' ? 'email' : 'login', {
+                    required: role === 'student' ? 'Email is required' : 'Login is required',
+                    minLength: { value: 1, message: role === 'student' ? 'Email must be at least 1 character' : 'Login must be at least 1 character' }
                   })}
                   className="w-full bg-transparent text-lg focus:outline-none"
-                  placeholder={role === 'user' ? 'Your email' : 'Your login'}
+                  placeholder={role === 'student' ? 'Your email' : 'Your login'}
                 />
               </div>
-              {errors[role === 'user' ? 'email' : 'login'] && (
+              {errors[role === 'student' ? 'email' : 'login'] && (
                 <motion.p
                   className="text-error text-sm mt-1"
                   initial={{ x: 0 }}
                   animate={{ x: [-5, 5, -5, 5, 0], transition: { duration: 0.5 } }}
                 >
-                  {errors[role === 'user' ? 'email' : 'login'].message}
+                  {errors[role === 'student' ? 'email' : 'login'].message}
                 </motion.p>
               )}
             </motion.div>
 
-            {/* Password Input with Icon */}
             <motion.div variants={itemVariants} className="relative">
               <label htmlFor="password" className="block mb-2 text-sm font-medium text-base-content">
                 Your password
@@ -257,7 +251,6 @@ const Login = () => {
               )}
             </motion.div>
 
-            {/* Enhanced Button */}
             <motion.button
               type="button"
               onClick={handleSubmit(onSubmit)}
@@ -284,7 +277,6 @@ const Login = () => {
               )}
             </motion.button>
 
-            {/* Progress Bar */}
             {loading && (
               <motion.div
                 className="w-full mt-4"
@@ -298,7 +290,6 @@ const Login = () => {
           </div>
         </motion.div>
 
-        {/* Image Section with Animation */}
         <motion.div
           className="hidden lg:flex lg:w-1/2 relative overflow-hidden"
           variants={itemVariants}

@@ -11,6 +11,7 @@ import { fetchUserInfo } from './redux/slices/authThunk';
 function App() {
   const dispatch = useDispatch();
   const { accessToken, role } = useSelector((state) => state.auth);
+  console.log(role)
   const isRehydrated = useSelector((state) => state.auth._persist?.rehydrated || false);
   const baseUrl = import.meta.env.VITE_API_URL;
   const user = useSelector((state) => state.auth.userInfo?.[0]);
@@ -18,9 +19,9 @@ function App() {
   const getApiEndpoint = (role) => {
     switch (role) {
       case 'club':
-        return `${baseUrl}/api/v1/clubs/info/`;
-      case 'user':
-        return `${baseUrl}/api/v1/users/userinfo/`;
+        return `${baseUrl}/api/v1/clubs/profile/`;
+      case 'student':
+        return `${baseUrl}/api/v1/students/profile/`;
       case 'admin':
       default:
         return null;
@@ -35,7 +36,7 @@ function App() {
       const fetchData = async () => {
         try {
           await axiosInstance.get(infoUrl);
-          if (role === 'user') {
+          if (role === 'student') {
             dispatch(fetchUserInfo());
           }
         } catch (error) {
