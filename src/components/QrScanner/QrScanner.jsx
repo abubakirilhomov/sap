@@ -10,7 +10,14 @@ const QrScanner = ({ onScanSuccess, validateQr }) => {
   const [isTransitioning, setIsTransitioning] = useState(false);
   const html5QrCodeRef = useRef(null);
 
-  const config = { fps: 15, qrbox: { width: 300, height: 300 } };
+  const config = {
+    fps: 10,
+    qrbox: (viewfinderWidth, viewfinderHeight) => {
+      const min = Math.min(viewfinderWidth, viewfinderHeight);
+      return { width: min * 0.8, height: min * 0.8 };
+    },
+    aspectRatio: 1.0,
+  };
 
   useEffect(() => {
     const html5QrCode = new Html5Qrcode("qr-reader");
@@ -19,8 +26,6 @@ const QrScanner = ({ onScanSuccess, validateQr }) => {
     const requestCameraPermission = async () => {
       try {
         const devices = await Html5Qrcode.getCameras();
-        console.log("Камеры:", devices);
-
         if (devices && devices.length) {
           setCameras(devices);
           const rearCamera =
@@ -31,7 +36,6 @@ const QrScanner = ({ onScanSuccess, validateQr }) => {
 
           setCameraId(rearCamera.id);
 
-          // Подождать перед запуском сканера
           setTimeout(() => {
             startScanning(rearCamera.id);
           }, 300);
@@ -40,7 +44,7 @@ const QrScanner = ({ onScanSuccess, validateQr }) => {
         }
       } catch (err) {
         setError(
-          "Ошибка доступа к камерам. Разрешите доступ к камере и используйте HTTPS или localhost."
+          "Ошибка доступа к камерам. Разрешите доступ и используйте HTTPS или localhost."
         );
         console.error("Ошибка доступа к камерам:", err);
       }
@@ -68,7 +72,7 @@ const QrScanner = ({ onScanSuccess, validateQr }) => {
             if (isValid) {
               onScanSuccess(decodedText);
             } else {
-              setError("Недействительный QR-код для этого события.");
+              setError("Недействительный QR-код.");
             }
           } else {
             onScanSuccess(decodedText);
@@ -84,7 +88,7 @@ const QrScanner = ({ onScanSuccess, validateQr }) => {
         setIsTransitioning(false);
       })
       .catch((err) => {
-        setError("Ошибка запуска сканирования: " + err.message);
+        setError("Ошибка запуска сканера: " + err.message);
         console.error(err);
         setIsTransitioning(false);
       });
@@ -95,15 +99,13 @@ const QrScanner = ({ onScanSuccess, validateQr }) => {
       setIsTransitioning(true);
       html5QrCodeRef.current
         .stop()
-        .then(() => {
-          return html5QrCodeRef.current.clear();
-        })
+        .then(() => html5QrCodeRef.current.clear())
         .then(() => {
           setIsScanning(false);
           setIsTransitioning(false);
         })
         .catch((err) => {
-          console.error("Ошибка остановки сканера:", err);
+          console.error("Ошибка остановки:", err);
           setIsTransitioning(false);
         });
     }
@@ -130,13 +132,25 @@ const QrScanner = ({ onScanSuccess, validateQr }) => {
   };
 
   return (
-    <div className="p-4 max-w-md mx-auto bg-white rounded-lg shadow-md">
-      <h2 className="text-lg font-semibold mb-2">Сканер для входа на ивент</h2>
+    <div className="p-4 max-w-full sm:max-w-md mx-auto bg-white rounded-lg shadow-md">
+      <h2 className="text-lg font-semibold mb-2 text-center">
+        Сканер QR-кодов
+      </h2>
 
-      <div id="qr-reader" style={{ width: "100%", height: "300px" }} />
+      <div
+        id="qr-reader"
+        style={{
+          width: "100%",
+          height: "auto",
+          aspectRatio: "1 / 1",
+          maxHeight: "90vh",
+          borderRadius: "0.5rem",
+          overflow: "hidden",
+        }}
+      />
 
       {error && (
-        <p className="text-red-500 mt-2">
+        <p className="text-red-500 mt-2 text-sm text-center">
           {error}{" "}
           <a
             href="https://support.google.com/chrome/answer/2693767"
@@ -144,18 +158,20 @@ const QrScanner = ({ onScanSuccess, validateQr }) => {
             rel="noopener noreferrer"
             className="underline"
           >
-            Проверьте настройки
+            Настройки камеры
           </a>
         </p>
       )}
 
       {scanResult && (
-        <p className="mt-2 text-green-600">Скан выполнен: {scanResult}</p>
+        <p className="mt-2 text-green-600 text-center text-sm">
+          ✅ Код считан: {scanResult}
+        </p>
       )}
 
       {cameras.length > 1 && (
         <select
-          className="mt-2 p-2 border rounded w-full"
+          className="mt-2 p-2 border rounded w-full text-sm"
           value={cameraId}
           onChange={(e) => switchCamera(e.target.value)}
           disabled={isTransitioning}
@@ -170,11 +186,11 @@ const QrScanner = ({ onScanSuccess, validateQr }) => {
 
       {!isScanning && cameraId && (
         <button
-          className="mt-2 p-2 bg-blue-500 text-white rounded w-full disabled:opacity-50"
+          className="mt-3 p-3 bg-blue-600 text-white rounded w-full text-base font-medium disabled:opacity-50"
           onClick={() => startScanning(cameraId)}
           disabled={isTransitioning}
         >
-          Запустить сканер
+          ▶️ Запустить сканирование
         </button>
       )}
     </div>
