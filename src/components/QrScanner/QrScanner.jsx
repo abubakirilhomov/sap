@@ -10,16 +10,16 @@ const QrScanner = ({ onScanSuccess, validateQr }) => {
   const html5QrCodeRef = useRef(null);
 
   const config = { fps: 15, qrbox: { width: 300, height: 300 } };
-  useEffect(() => {
 
+  useEffect(() => {
     const html5QrCode = new Html5Qrcode("qr-reader");
     html5QrCodeRef.current = html5QrCode;
 
-    Html5Qrcode.getCameras()
-      .then((devices) => {
+    const requestCameraPermission = async () => {
+      try {
+        const devices = await Html5Qrcode.getCameras();
         if (devices && devices.length) {
           setCameras(devices);
-          // Поиск задней камеры по метке или использование первой доступной
           const rearCamera = devices.find((cam) =>
             cam.label?.toLowerCase().includes("back") ||
             cam.label?.toLowerCase().includes("rear")
@@ -27,12 +27,17 @@ const QrScanner = ({ onScanSuccess, validateQr }) => {
           setCameraId(rearCamera.id);
           startScanning(rearCamera.id);
         } else {
-          setError("Камеры не найдены.");
+          setError("Камеры не найдены. Убедитесь, что устройство имеет камеру.");
         }
-      })
-      .catch((err) => {
-        setError("Ошибка доступа к камерам: " + err.message);
-      });
+      } catch (err) {
+        setError(
+          "Ошибка доступа к камерам. Убедитесь, что вы предоставили разрешение на использование камеры в настройках браузера и используете HTTPS или localhost."
+        );
+        console.error("Ошибка доступа к камерам:", err);
+      }
+    };
+
+    requestCameraPermission();
 
     return () => {
       if (html5QrCodeRef.current && isScanning) {
@@ -95,7 +100,19 @@ const QrScanner = ({ onScanSuccess, validateQr }) => {
     <div className="p-4 max-w-md mx-auto bg-white rounded-lg shadow-md">
       <h2 className="text-lg font-semibold mb-2">Сканер для входа на ивент</h2>
       <div id="qr-reader" style={{ width: "100%", height: "300px" }} />
-      {error && <p className="text-red-500 mt-2">{error}</p>}
+      {error && (
+        <p className="text-red-500 mt-2">
+          {error}{" "}
+          <a
+            href="https://support.google.com/chrome/answer/2693767"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="underline"
+          >
+            Проверьте настройки
+          </a>
+        </p>
+      )}
       {scanResult && (
         <p className="mt-2 text-green-600">Скан выполнен: {scanResult}</p>
       )}
