@@ -1,74 +1,122 @@
-import { useEffect, useRef, useState } from "react";
-import QrScanner from "qr-scanner";
+import React, { useEffect, useState, useRef } from "react";
+import { Html5Qrcode } from "html5-qrcode";
 
-const QrReader = () => {
-  const scanner = useRef(null);
-  const videoEl = useRef(null);
-  const qrBoxEl = useRef(null);
-  const [qrOn, setQrOn] = useState(true);
-  const [scannedResult, setScannedResult] = useState("");
+const QrScanner = ({ onScanSuccess, validateQr }) => {
+  const [error, setError] = useState(null);
+  const [cameraId, setCameraId] = useState(null);
+  const [cameras, setCameras] = useState([]);
+  const [isScanning, setIsScanning] = useState(false);
+  const [scanResult, setScanResult] = useState(null);
+  const html5QrCodeRef = useRef(null);
 
-  const onScanSuccess = (result) => {
-    console.log(result);
-    setScannedResult(result.data);
-  };
-
-  const onScanFail = (err) => {
-    console.log(err);
-  };
-
+  const config = { fps: 15, qrbox: { width: 300, height: 300 } };
   useEffect(() => {
-    if (videoEl.current && !scanner.current) {
-      scanner.current = new QrScanner(videoEl.current, onScanSuccess, {
-        onDecodeError: onScanFail,
-        preferredCamera: "environment",
-        highlightScanRegion: true,
-      });
 
-      scanner.current.start().catch((err) => {
-        console.error("Failed to start scanner:", err);
-        setQrOn(false);
+    const html5QrCode = new Html5Qrcode("qr-reader");
+    html5QrCodeRef.current = html5QrCode;
+
+    Html5Qrcode.getCameras()
+      .then((devices) => {
+        if (devices && devices.length) {
+          setCameras(devices);
+          setCameraId(devices[0].id);
+          startScanning(devices[0].id);
+        } else {
+          setError("Камеры не найдены.");
+        }
+      })
+      .catch((err) => {
+        setError("Ошибка доступа к камерам: " + err.message);
       });
-    }
 
     return () => {
-      if (scanner.current) {
-        scanner.current.stop();
+      if (html5QrCodeRef.current && isScanning) {
+        html5QrCodeRef.current
+          .stop()
+          .then(() => html5QrCodeRef.current.clear())
+          .catch((err) => console.error("Ошибка остановки:", err));
       }
     };
   }, []);
 
-  useEffect(() => {
-    if (!qrOn) {
-      alert("Camera is blocked or not accessible. Please allow camera in your browser permissions and reload.");
+  const startScanning = (selectedCameraId) => {
+    if (html5QrCodeRef.current && !isScanning) {
+      setIsScanning(true);
+      html5QrCodeRef.current
+        .start(
+          { deviceId: { exact: selectedCameraId } },
+          config,
+          (decodedText) => {
+            setScanResult(decodedText);
+            if (validateQr && typeof validateQr === "function") {
+              const isValid = validateQr(decodedText);
+              if (isValid) {
+                onScanSuccess(decodedText);
+              } else {
+                setError("Недействительный QR-код для этого события.");
+              }
+            } else {
+              onScanSuccess(decodedText);
+            }
+          },
+          (errorMessage) => {
+            setError(errorMessage);
+            setIsScanning(false);
+          }
+        )
+        .catch((err) => {
+          setError("Ошибка запуска сканирования: " + err.message);
+          setIsScanning(false);
+        });
     }
-  }, [qrOn]);
+  };
+
+  const switchCamera = (newCameraId) => {
+    if (html5QrCodeRef.current && isScanning) {
+      html5QrCodeRef.current
+        .stop()
+        .then(() => {
+          setCameraId(newCameraId);
+          startScanning(newCameraId);
+        })
+        .catch((err) => setError("Ошибка переключения камеры: " + err.message));
+    } else if (!isScanning) {
+      setCameraId(newCameraId);
+      startScanning(newCameraId);
+    }
+  };
 
   return (
-    <div className="relative w-full max-w-md mx-auto p-4">
-      <video
-        ref={videoEl}
-        className="w-full h-auto rounded-lg shadow-lg"
-      ></video>
-      <div
-        ref={qrBoxEl}
-        className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-64 h-64"
-      >
-        <img
-          src="https://raw.githubusercontent.com/SurajanShrestha/qr-scanner-in-react/main/src/assets/qr-frame.svg"
-          alt="QR Frame"
-          className="w-full h-full object-contain"
-        />
-      </div>
-      {scannedResult && (
-        <div className="absolute top-4 left-4 bg-base-100 text-base-content p-2 rounded-md shadow-md z-50">
-          <p className="text-sm">
-            <span className="font-bold">Scanned Result:</span> {scannedResult}
-          </p>
-        </div>
+    <div className="p-4 max-w-md mx-auto bg-white rounded-lg shadow-md">
+      <h2 className="text-lg font-semibold mb-2">Сканер для входа на ивент</h2>
+      <div id="qr-reader" style={{ width: "100%", height: "300px" }} />
+      {error && <p className="text-red-500 mt-2">{error}</p>}
+      {scanResult && (
+        <p className="mt-2 text-green-600">Скан выполнен: {scanResult}</p>
+      )}
+      {cameras.length > 1 && (
+        <select
+          className="mt-2 p-2 border rounded w-full"
+          value={cameraId}
+          onChange={(e) => switchCamera(e.target.value)}
+        >
+          {cameras.map((cam) => (
+            <option key={cam.id} value={cam.id}>
+              {cam.label || `Камера ${cam.id}`}
+            </option>
+          ))}
+        </select>
+      )}
+      {!isScanning && cameraId && (
+        <button
+          className="mt-2 p-2 bg-blue-500 text-white rounded w-full"
+          onClick={() => startScanning(cameraId)}
+        >
+          Запустить сканер
+        </button>
       )}
     </div>
   );
 };
 
-export default QrReader;
+export default QrScanner;
