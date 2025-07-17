@@ -9,8 +9,8 @@ const QrScanner = ({ onScanSuccess, validateQr }) => {
   const [scanResult, setScanResult] = useState(null);
   const html5QrCodeRef = useRef(null);
 
+  const config = { fps: 15, qrbox: { width: 300, height: 300 } };
   useEffect(() => {
-    const config = { fps: 15, qrbox: { width: 300, height: 300 } };
 
     const html5QrCode = new Html5Qrcode("qr-reader");
     html5QrCodeRef.current = html5QrCode;
