@@ -56,6 +56,7 @@ const Dashboard = () => {
         role="region"
         aria-label="Latest News Section"
       >
+
         <h2 className="text-lg md:text-2xl font-semibold mb-4" role="heading" aria-level="2">
           Latest News
         </h2>

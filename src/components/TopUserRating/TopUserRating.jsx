@@ -13,9 +13,9 @@ const TopUserRatings = ({ ratings = [], onClick }) => {
   };
 
   const medalColors = {
-    0: 'text-yellow-400', // Gold for 1st
-    1: 'text-gray-300', // Silver for 2nd
-    2: 'text-amber-600', // Bronze for 3rd
+    0: 'text-yellow-400',
+    1: 'text-gray-300',
+    2: 'text-amber-600',
   };
 
   return (

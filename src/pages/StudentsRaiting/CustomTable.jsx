@@ -20,6 +20,7 @@ const StudentsTable = ({ filterStudents }) => {
                 const { data } = await axiosInstance.get(`/api/v1/students/rating/?page=${page}&page_size=${pageSize}`);
                 setStudents(data.results);
                 setTotalPages(Math.ceil(data.count / pageSize));
+                console.log("hushuxhi",data)
             } catch (err) {
                 setError('Error fetching student data.');
             } finally {
