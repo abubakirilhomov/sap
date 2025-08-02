@@ -1,9 +1,11 @@
 import React from 'react';
 import studentImage from '../../../public/students.png';
 
-const getMedalEmoji = (index) => {
-  return ['🥇', '🥈', '🥉'][index] || index + 1;
-};
+const getMedalEmoji = (index, isFiltered) => {
+    if (isFiltered) return ""; 
+    return ['🥇', '🥈', '🥉'][index] || index + 1;
+  };
+  
 
 const getGradeColor = (grade) => {
   switch (grade) {
@@ -33,7 +35,7 @@ const StudentCard = ({ item, index }) => {
             <p className="font-bold text-lg">{item.name} {item.surname}</p>
             <p className="font-bold text-lg">{getMedalEmoji(index)}</p>
           </div>
-          <p className="text-sm text-base-content/70">{item.faculty?.faculty_name}</p>
+          <p className="text-sm text-base-content/70">{item.faculty?.faculty_namegit}</p>
           <p className={`inline-block mt-2 px-3 py-1 rounded-full text-sm font-semibold ${getGradeColor(item?.grade?.grade_name)}`}>
             {item?.grade?.grade_name}
           </p>
