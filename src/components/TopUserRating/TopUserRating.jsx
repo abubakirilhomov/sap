@@ -1,11 +1,13 @@
 import React from 'react';
 import { motion } from 'framer-motion';
 import { UserRound, Medal } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
 
 const TopUserRatings = ({ ratings = [], onClick }) => {
   const topRatings = ratings.slice(0, 5);
   const serverUrl = import.meta.env.VITE_API_URL;
   const maxNameLength = 20;
+  const navigate = useNavigate()
 
   const truncateName = (name) => {
     if (!name) return 'User';
@@ -13,9 +15,9 @@ const TopUserRatings = ({ ratings = [], onClick }) => {
   };
 
   const medalColors = {
-    0: 'text-yellow-400', // Gold for 1st
-    1: 'text-gray-300', // Silver for 2nd
-    2: 'text-amber-600', // Bronze for 3rd
+    0: 'text-yellow-400', 
+    1: 'text-gray-300',
+    2: 'text-amber-600', 
   };
 
   return (
@@ -87,7 +89,7 @@ const TopUserRatings = ({ ratings = [], onClick }) => {
         <div className="text-end mt-4">
           <motion.button
             className="btn btn-sm btn-outline btn-accent text-xs sm:text-sm font-medium"
-            onClick={onClick}
+            onClick={onClick || navigate('/leaderboard')}
             whileHover={{ scale: 1.05 }}
             whileTap={{ scale: 0.95 }}
           >
