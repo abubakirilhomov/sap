@@ -1,11 +1,10 @@
 import React from 'react';
 import studentImage from '../../../public/students.png';
 
-const getMedalEmoji = (index, isFiltered) => {
-    if (isFiltered) return ""; 
-    return ['🥇', '🥈', '🥉'][index] || index + 1;
-  };
-  
+const getMedalEmoji = (index, isFiltered, rank) => {
+  if (isFiltered) return rank; // Filtrlashda asl reyting o'rni ko'rsatiladi
+  return ['🥇', '🥈', '🥉'][index] || index + 1;
+};
 
 const getGradeColor = (grade) => {
   switch (grade) {
@@ -16,7 +15,7 @@ const getGradeColor = (grade) => {
   }
 };
 
-const StudentCard = ({ item, index }) => {
+const StudentCard = ({ item, index, isFiltered }) => {
   return (
     <div className="bg-base-100 border border-base-300 rounded-lg p-4 shadow-sm hover:shadow-md transition-shadow">
       <div className="flex items-center gap-3">
@@ -33,9 +32,9 @@ const StudentCard = ({ item, index }) => {
         <div className="flex-1">
           <div className="flex justify-between items-center">
             <p className="font-bold text-lg">{item.name} {item.surname}</p>
-            <p className="font-bold text-lg">{getMedalEmoji(index)}</p>
+            <p className="font-bold text-lg">{getMedalEmoji(index, isFiltered, item.rank)}</p>
           </div>
-          <p className="text-sm text-base-content/70">{item.faculty?.faculty_namegit}</p>
+          <p className="text-sm text-base-content/70">{item.faculty?.faculty_name}</p>
           <p className={`inline-block mt-2 px-3 py-1 rounded-full text-sm font-semibold ${getGradeColor(item?.grade?.grade_name)}`}>
             {item?.grade?.grade_name}
           </p>

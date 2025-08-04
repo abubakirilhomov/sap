@@ -6,9 +6,9 @@ const StudentsRaiting = () => {
 
   return (
     <div className="flex flex-col min-h-screen p-4 sm:p-6 md:p-8 max-w-7xl mx-auto">
-      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 bg-primary h-14 p-2 ml-3 mr-3 rounded-2xl">
         <p
-          className="text-lg sm:text-xl md:text-2xl lg:text-3xl text-center font-bold text-base-content/90"
+          className="text-lg ml-4 sm:text-xl text-primary-content md:text-2xl lg:text-3xl text-center font-bold "
           role="heading"
           aria-level="1"
         >

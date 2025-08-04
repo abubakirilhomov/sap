@@ -1,7 +1,8 @@
 import React from 'react';
 import studentImage from '../../../public/students.png';
 
-const getMedalEmoji = (index) => {
+const getMedalEmoji = (index, isFiltered, originalIndex) => {
+  if (isFiltered) return originalIndex + 1; 
   return ['🥇', '🥈', '🥉'][index] || index + 1;
 };
 
@@ -14,10 +15,10 @@ const getGradeColor = (grade) => {
   }
 };
 
-const StudentRow = ({ item, index }) => {
+const StudentRow = ({ item, index, isFiltered }) => {
   return (
-    <tr className="hover:bg-base-200 transition-all">
-      <td className="text-center font-bold text-lg">{getMedalEmoji(index)}</td>
+    <tr className="hover:bg-base-200 transition-all ">
+      <td className="text-center font-bold text-lg ">{getMedalEmoji(index, isFiltered, item.originalIndex)}</td>
       <td>
         <div className="flex items-center gap-3">
           <div className="avatar">
