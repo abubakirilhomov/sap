@@ -7,6 +7,7 @@ import { FaBasketShopping } from "react-icons/fa6";
 import { MdGroups } from "react-icons/md";
 import { logout } from "../../redux/slices/authSlice";
 import { MdOutlineLeaderboard } from "react-icons/md";
+import { MdLeaderboard } from "react-icons/md";
 
 
 const gradeColors = {
@@ -54,8 +55,8 @@ const Sidebar = () => {
       path: "/shop",
       icon: <FaBasketShopping className="mr-2" />,
     },
+    { name: "Rating", path: "/rating", icon: <MdLeaderboard className="mr-2" /> },
     { name: "Profile", path: "/profile", icon: <FaUser className="mr-2" /> },
-    { name: "Leaderboard", path: "/rating", icon: <MdOutlineLeaderboard className="mr-2" /> },
 
   ];
 

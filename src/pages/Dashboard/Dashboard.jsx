@@ -74,7 +74,7 @@ const Dashboard = () => {
         <div className="md:w-1/3 p-4 w-full">
           <TopUserRatings
             ratings={ratings.results}
-            onClick={() => navigate('/users/ratings')}
+            onClick={() => navigate('/rating')}
           />
         </div>
       </motion.div>

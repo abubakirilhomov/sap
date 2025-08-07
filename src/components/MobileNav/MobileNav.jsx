@@ -3,6 +3,7 @@ import { NavLink } from 'react-router-dom';
 import { FaHome, FaUser, FaBook } from 'react-icons/fa';
 import { FaBasketShopping } from 'react-icons/fa6';
 import { BsQrCodeScan } from "react-icons/bs";
+import { MdLeaderboard } from 'react-icons/md';
 
 const MobileNav = () => {
   const links = [
@@ -10,7 +11,9 @@ const MobileNav = () => {
     { name: 'Posts', path: '/posts', icon: <FaBook className="text-xl" /> },
     { name: 'Scan', path: '/qr-scanner', icon: <BsQrCodeScan className="text-xl" /> },
     { name: 'Shop', path: '/shop', icon: <FaBasketShopping className="text-xl" /> },
+    { name: "Rating", path: "/rating", icon: <MdLeaderboard className="mr-2" /> },
     { name: 'Profile', path: '/profile', icon: <FaUser className="text-xl" /> },
+
   ];
 
   return (
