@@ -8,18 +8,22 @@ import { BsFillLightningChargeFill } from 'react-icons/bs';
 import { MdCategory } from 'react-icons/md';
 import { FiArrowLeftCircle } from 'react-icons/fi';
 import { useSelector } from 'react-redux';
-
+import { toast } from 'react-toastify'
 const ClubDetail = () => {
   const { id } = useParams();
   const navigate = useNavigate();
   const [club, setClub] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [isFollowing, setIsFollowing] = useState(false);
+  const [followLoading, setFollowLoading] = useState(false);
+  const user = useSelector((state) => state.auth?.userInfo?.[0]); 
 
   useEffect(() => {
     const fetchClub = async () => {
       try {
         const { data } = await axiosInstance.get(`/api/v1/clubs/${id}`);
         setClub(data);
+        console.log("d",data.id);
       } catch (err) {
         console.error('Failed to load club', err);
       } finally {
@@ -29,6 +33,55 @@ const ClubDetail = () => {
     fetchClub();
   }, [id]);
 
+  useEffect(() => {
+    if (user && Array.isArray(club?.followers)) {
+      const isUserFollowing = club.followers.some(follower => {
+        return String(follower.id || follower._id) === String(user.id || user._id);
+      });
+      setIsFollowing(isUserFollowing);
+    }
+  }, [user, club]);
+  
+  
+
+  const handleFollowToggle = async () => {
+    if (!user || !club?.id) return;
+  
+    setFollowLoading(true);
+    try {
+      if (isFollowing) {
+        await axiosInstance.delete(`/api/v1/clubs/unfollow/`, {
+          data: { club_id: club.id }
+        });
+        
+        setClub((prev) => ({
+          ...prev,
+          followers: prev.followers.filter(f => f.id !== user.id && f._id !== user._id)
+          }));
+        toast.info("Unfollowed", { position: "bottom-right", autoClose: 3000 });
+  
+        setIsFollowing(false);
+      } else {
+        await axiosInstance.post(`/api/v1/clubs/follow/`, {
+          club_id: club.id,
+        });
+
+        setClub((prev) => ({
+          ...prev,
+          followers: [...prev.followers, user]
+          }));
+        toast.success("Followed", { position: "bottom-right", autoClose: 3000 });
+  
+        setIsFollowing(true);
+      }
+    } catch (err) {
+      console.error("Follow/Unfollow failed", err);
+      toast.error("Error: " + (err?.response?.data?.detail || "Unknown error"));
+    } finally {
+      setFollowLoading(false);
+    }
+  };
+  
   if (loading) return <Loading />;
   if (!club) return <div className="text-error text-center text-xl mt-10">Club not found</div>;
 
@@ -82,8 +135,11 @@ const ClubDetail = () => {
         </div>
 
         <div className="mt-10 text-center">
-          <button className="btn btn-primary btn-wide transition-transform hover:scale-105">
-            Follow
+          <button
+            className={`btn btn-primary btn-wide transition-transform hover:scale-105 ${followLoading ? "btn-disabled" : ""}`}
+            onClick={handleFollowToggle}
+          >
+            {followLoading ? "..." : isFollowing ? "Unfollow" : "Follow"}
           </button>
         </div>
       </div>
