@@ -1,17 +1,29 @@
 import React from 'react';
 import studentImage from '../../../public/students.png';
 
-const getMedalEmoji = (index, isFiltered, rank) => {
-  if (isFiltered) return rank; // Filtrlashda asl reyting o'rni ko'rsatiladi
+const getMedalEmoji = (index, isFiltered, originalIndex) => {
+  if (isFiltered) return originalIndex + 1;
   return ['🥇', '🥈', '🥉'][index] || index + 1;
+};
+
+const getRankStyle = (index, isFiltered, originalIndex) => {
+  const rank = isFiltered ? originalIndex : index;
+  if (rank === 0) return 'bg-green-900 text-white w-full text-center py-2';
+  if (rank === 1) return 'bg-green-800 text-white w-full text-center py-2';
+  if (rank === 2) return 'bg-green-700 text-white w-full text-center py-2';
+  return '';
 };
 
 const getGradeColor = (grade) => {
   switch (grade) {
-    case "Senior": return "bg-warning text-black";
-    case "Middle": return "bg-info text-base-content";
-    case "Junior": return "bg-success text-base-content";
-    default: return "bg-base-300 text-base-content";
+    case 'Senior':
+      return 'bg-warning text-black';
+    case 'Middle':
+      return 'bg-info text-base-content';
+    case 'Junior':
+      return 'bg-success text-base-content';
+    default:
+      return 'bg-base-300 text-base-content';
   }
 };
 
@@ -32,10 +44,22 @@ const StudentCard = ({ item, index, isFiltered }) => {
         <div className="flex-1">
           <div className="flex justify-between items-center">
             <p className="font-bold text-lg">{item.name} {item.surname}</p>
-            <p className="font-bold text-lg">{getMedalEmoji(index, isFiltered, item.rank)}</p>
+            <p
+              className={`font-bold text-lg ${getRankStyle(
+                index,
+                isFiltered,
+                item.originalIndex
+              )}`}
+            >
+              {getMedalEmoji(index, isFiltered, item.originalIndex)}
+            </p>
           </div>
           <p className="text-sm text-base-content/70">{item.faculty?.faculty_name}</p>
-          <p className={`inline-block mt-2 px-3 py-1 rounded-full text-sm font-semibold ${getGradeColor(item?.grade?.grade_name)}`}>
+          <p
+            className={`inline-block mt-2 px-3 py-1 rounded-full text-sm font-semibold ${getGradeColor(
+              item?.grade?.grade_name
+            )}`}
+          >
             {item?.grade?.grade_name}
           </p>
         </div>
