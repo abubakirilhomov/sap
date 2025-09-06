@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { useSelector } from 'react-redux';
 import { BsFillLightningChargeFill } from "react-icons/bs";
+import { Link } from 'react-router-dom';
 
 const gradeColors = {
   Freshmen: "bg-blue-500",
@@ -59,7 +60,7 @@ const Navbar = ({ tokens }) => {
             tabIndex={0}
             className="dropdown-content menu bg-base-100 rounded-box z-[1] w-52 p-2 shadow-sm"
           >
-            <li><a>Profile</a></li>
+            <li><Link to={'/profile'}>Profile</Link></li>
             <li><a>Settings</a></li>
             <li><a>Logout</a></li>
           </ul>

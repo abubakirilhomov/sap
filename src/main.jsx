@@ -8,7 +8,6 @@ import App from "./App.jsx";
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import Dashboard from "./pages/Dashboard/Dashboard.jsx";
 import Profile from "./pages/Profile/Profile.jsx";
-import Posts from "./pages/Posts/Posts.jsx";
 import Shop from "./pages/Shop/Shop.jsx";
 import Login from "./pages/Login/Login.jsx";
 import Clubs from "./pages/Clubs/Clubs.jsx";
@@ -17,6 +16,7 @@ import PrivateRoute from "./hooks/PrivateRoute.jsx";
 import QrScanner from "./components/QrScanner/QrScanner.jsx";
 import QrCode from "./pages/QrCode/QrCode.jsx";
 import StudentsRaiting from "./pages/StudentsRaiting/StudentsRaiting.jsx";
+import { ToastContainer } from "react-toastify";
 
 const router = createBrowserRouter([
   {
@@ -36,14 +36,6 @@ const router = createBrowserRouter([
         element: (
           <PrivateRoute>
             <Profile />
-          </PrivateRoute>
-        ),
-      },
-      {
-        path: "/posts",
-        element: (
-          <PrivateRoute>
-            <Posts />
           </PrivateRoute>
         ),
       },
@@ -87,10 +79,25 @@ document.title = import.meta.env.VITE_APP_TITLE
 
 createRoot(document.getElementById("root")).render(
   <StrictMode>
-    <Provider store={store}>
-      <PersistGate loading={null} persistor={persistor}>
+  <Provider store={store}>
+    <PersistGate loading={null} persistor={persistor}>
+      <>
         <RouterProvider router={router} />
-      </PersistGate>
-    </Provider>
-  </StrictMode>
+        <ToastContainer
+          position="bottom-right"
+          autoClose={3000}
+          hideProgressBar={false}
+          newestOnTop={false}
+          closeOnClick
+          rtl={false}
+          pauseOnFocusLoss
+          draggable
+          pauseOnHover
+          theme="colored"
+        />
+      </>
+    </PersistGate>
+  </Provider>
+</StrictMode>
+
 );

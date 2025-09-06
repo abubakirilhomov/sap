@@ -8,7 +8,6 @@ import { MdLeaderboard } from 'react-icons/md';
 const MobileNav = () => {
   const links = [
     { name: 'Home', path: '/', icon: <FaHome className="text-xl" /> },
-    { name: 'Posts', path: '/posts', icon: <FaBook className="text-xl" /> },
     { name: 'Scan', path: '/qr-scanner', icon: <BsQrCodeScan className="text-xl" /> },
     { name: 'Shop', path: '/shop', icon: <FaBasketShopping className="text-xl" /> },
     { name: "Rating", path: "/rating", icon: <MdLeaderboard className="mr-2" /> },

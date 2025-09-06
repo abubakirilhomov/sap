@@ -1,169 +1,227 @@
-import React, { useState } from 'react';
-import { MdLocalPhone, MdLocationOn } from "react-icons/md";
-import { MdMailOutline } from "react-icons/md";
-import { IoMdTrophy } from "react-icons/io";
-import { FaEdit } from 'react-icons/fa';
-import { useDispatch, useSelector } from 'react-redux';
-import { useNavigate } from 'react-router-dom';
-
-const gradeColors = {
-  Freshmen: "bg-blue-500",
-  Sophomore: "bg-purple-500",
-  Junior: "bg-pink-500",
-  Senior: "bg-amber-500",
-  Default: "bg-neutral",
-};
+import React, { useEffect, useRef, useState } from "react";
+import {
+  User,
+  GraduationCap,
+  Hash,
+  Coins,
+  BookOpen,
+  Award,
+  Upload,
+} from "lucide-react";
+import axiosInstance from "../../axiosInstance/axiosInstance";
+import { toast } from "react-toastify";
 
 const Profile = () => {
-  const user = useSelector((state) => state.auth.userInfo[0]);
-  const [imgError, setImgError] = useState(false);
-  const dispatch = useDispatch();
-  const navigate = useNavigate();
+  const [profile, setProfile] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+  const [selectedFile, setSelectedFile] = useState(null);
+  const [previewImage, setPreviewImage] = useState(null);
+  const [uploading, setUploading] = useState(false);
+  const fileInputRef = useRef(null);
 
-  const gradeName = user?.grade?.grade_name || "Default";
-  const gradeColor = gradeColors[gradeName] || gradeColors.Default;
+  // Profile Fetch
+  const fetchProfile = async () => {
+    try {
+      const response = await axiosInstance.get("/api/v1/students/profile/");
+      if (response.data.length > 0) {
+        setProfile(response.data[0]);
+      } else {
+        setError("Ma'lumot topilmadi");
+      }
+    } catch (error) {
+      console.error(error);
+      setError("Ma'lumotlarni yuklab bo'lmadi");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    fetchProfile();
+  }, []);
+
+  // Image Change
+  const handleImageChange = (e) => {
+    const file = e.target.files[0];
+    if (file) {
+      setSelectedFile(file);
+      setPreviewImage(URL.createObjectURL(file));
+    }
+  };
+
+  // Image Upload
+  const handleImageUpload = async (e) => {
+    e.preventDefault();
+    if (!selectedFile) return toast.error("Iltimos, rasm tanlang!");
+
+    const formData = new FormData();
+    formData.append("image", selectedFile);
+
+    try {
+      setUploading(true);
+      await axiosInstance.put(`/api/v1/students/profile/`, formData, {
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
+      });
+
+      toast.success("Rasm muvaffaqiyatli yuklandi!", {
+        position: "bottom-right",
+        autoClose: 3000,
+      });
+
+      if (fileInputRef.current) {
+        fileInputRef.current.value = "";
+      }
+      setSelectedFile(null);
+      setPreviewImage(null);
+      await fetchProfile();
+    } catch (err) {
+      console.error("Image Upload Error:", err);
+      if (err.response) {
+        console.error("Response Data:", err.response.data);
+        toast.error(
+          `Xatolik: ${err.response.status} - ${JSON.stringify(
+            err.response.data
+          )}`
+        );
+      } else {
+        toast.error("Serverga ulanib bo‘lmadi!");
+      }
+    } finally {
+      setUploading(false);
+    }
+  };
+
+  if (loading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-base-200">
+        <span className="loading loading-spinner loading-lg text-primary"></span>
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-base-200">
+        <div className="bg-base-100 p-8 rounded-xl shadow-lg border border-base-300 text-center">
+          <User className="w-12 h-12 text-error mx-auto mb-4" />
+          <p className="text-lg text-error">{error}</p>
+        </div>
+      </div>
+    );
+  }
 
   return (
-    <div className="p-6 bg-base-200 min-h-screen">
-      <div className="flex flex-wrap gap-4">
-        {user?.image ? (
-          <>
-            <div className="w-full">
-              <p className='font-bold text-secondary text-4xl'>Your Profile</p>
-              <div className="breadcrumbs text-sm">
-                <ul>
-                  <li><a className='text-secondary'>App</a></li>
-                  <li><a className='text-secondary'>Profile</a></li>
-                </ul>
-              </div>
+    <div className="min-h-screen bg-base-100 py-8 px-4">
+      <div className="max-w-3xl mx-auto bg-base-200 rounded-2xl shadow-md p-6 space-y-6">
+        {/* Profile Header */}
+        <div className="flex flex-col md:flex-row items-center space-y-4 md:space-y-0 md:space-x-6">
+          <div className="relative">
+            <div className="w-28 h-28 rounded-full overflow-hidden border border-base-300 shadow-sm">
+              <img
+                src={
+                  previewImage
+                    ? previewImage
+                    : `https://api.univibe.uz${profile.image}?v=${profile.image_updated_at}`
+                }
+                alt="Profile"
+                className="w-full h-full object-cover"
+              />
             </div>
+            <div className="absolute -bottom-1.5 -right-1.5 w-4 h-4 bg-success rounded-full border border-base-100"></div>
+          </div>
 
-            <div className="card bg-base-100 w-80 h-120 shadow-md shadow-secondary">
-              <div className="mt-4">
-                <figure>
-                  <img
-                    src={user.image}
-                    alt="Profile"
-                    className='rounded-box w-60 h-60'
-                    onError={() => setImgError(true)}
-                  />
-                </figure>
-              </div>
-              <div className="mt-4 flex flex-col justify-center items-center p-4">
-                <p className="font-semibold text-2xl text-secondary">
-                  {user.name || "User"} {user.surname || ""}
-                </p>
-                <div className="mt-4 border-t-2 border-secondary justify-center items-center">
-                  <div className="flex items-center justify-center gap-2 mt-3">
-                    <p className='text-secondary'><MdLocationOn /></p>
-                    <p className='text-secondary'>Tashkent, Uzbekistan</p>
-                  </div>
-                  <div className="flex items-center justify-center gap-5">
-                    <p className='text-secondary'><MdMailOutline /></p>
-                    <p className='text-secondary'>Example@gmail.com</p>
-                  </div>
-                  <div className="flex items-center justify-center gap-6">
-                    <p className='text-secondary'><MdLocalPhone /></p>
-                    <p className='text-secondary'>(+998) 99 606 3131</p>
-                  </div>
-                </div>
-              </div>
-            </div>
+          <div className="text-center md:text-left">
+            <h1 className="text-2xl font-semibold text-base-content capitalize">
+              {profile.name} {profile.surname}
+            </h1>
+            <p className="flex items-center justify-center md:justify-start mt-1 text-base-content">
+              <GraduationCap className="w-4 h-4 mr-2 text-primary" />
+              {profile.faculty.faculty_name}
+            </p>
+            <p className="flex items-center justify-center md:justify-start text-base-content">
+              <BookOpen className="w-4 h-4 mr-2 text-secondary" />
+              {profile.grade.grade_name}
+            </p>
+          </div>
+        </div>
 
-            <div className="w-100 flex flex-col items-center">
-              <div className="bg-base-100 rounded-2xl shadow-md shadow-secondary">
-                <div className="w-96 p-6 bg-base-100 border-2 border-secondary rounded-md">
-                  <div className="flex justify-between mb-4">
-                    <p className="text-2xl font-semibold text-secondary">Account Details</p>
-                    <p className='text-secondary text-2xl'><FaEdit /></p>
-                  </div>
-                  <div>
-                    <div className="flex justify-between">
-                      <p className='text-secondary font-medium'>First Name</p>
-                      <p className='text-secondary font-medium'>{user.name || "Jafarbek"}</p>
-                    </div>
-                    <div className="flex justify-between">
-                      <p className='text-secondary font-medium'>Last Name</p>
-                      <p className='text-secondary font-medium'>{user.surname || "Ulugbekov"}</p>
-                    </div>
-                    <div className="flex justify-between">
-                      <p className='text-secondary font-medium'>Date Of Birth</p>
-                      <p className='text-secondary font-medium'>30/06/12</p>
-                    </div>
-                    <div className="flex justify-between">
-                      <p className='text-secondary font-medium'>Gender</p>
-                      <p className='text-secondary font-medium'>Male</p>
-                    </div>
-                    <div className="flex justify-between">
-                      <p className='text-secondary font-medium'>ID</p>
-                      <p className='text-secondary font-medium'>4646</p>
-                    </div>
-                    <div className="flex justify-between">
-                      <p className='text-secondary font-medium'>Cours</p>
-                      <p className='text-secondary font-medium'>4</p>
-                    </div>
-                    <div className="flex justify-between">
-                      <p className='text-secondary font-medium'>Grade</p>
-                      <p className='text-secondary font-medium'>{gradeName}</p>
-                    </div>
-                  </div>
-                </div>
-              </div>
+        {/* Upload Image Form */}
+        <form
+          onSubmit={handleImageUpload}
+          className="flex items-center space-x-4"
+        >
+          <input
+            type="file"
+            name="image"
+            accept="image/*"
+            onChange={handleImageChange}
+            className="file-input file-input-sm file-input-bordered"
+            ref={fileInputRef}
+          />
 
-              <div className="bg-base-100 rounded-2xl shadow-md shadow-secondary mt-10">
-                <div className="w-96 p-6 bg-base-100 border-2 border-secondary rounded-md">
-                  <div className="flex justify-between mb-4">
-                    <p className="text-2xl font-semibold text-secondary">Adress</p>
-                    <p className='text-secondary text-2xl'><FaEdit /></p>
-                  </div>
-                  <div>
-                    <div className="flex justify-between">
-                      <p className='text-secondary font-medium'>Adress</p>
-                      <p className='text-secondary font-medium'>Yunusabad 13513 Kvartal</p>
-                    </div>
-                    <div className="flex justify-between">
-                      <p className='text-secondary font-medium'>City</p>
-                      <p className='text-secondary font-medium'>Tashkent</p>
-                    </div>
-                    <div className="flex justify-between">
-                      <p className='text-secondary font-medium'>Country</p>
-                      <p className='text-secondary font-medium'>UzBekistan</p>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
+          <button
+            type="submit"
+            disabled={uploading}
+            className="btn btn-primary btn-sm flex items-center space-x-2"
+          >
+            {uploading ? (
+              <span className="loading loading-spinner loading-sm"></span>
+            ) : (
+              <Upload className="w-4 h-4" />
+            )}
+            <span>Yuklash</span>
+          </button>
+        </form>
 
+        {/* Stats */}
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div className="flex items-center bg-primary/10 text-primary rounded-lg p-3">
+            <Coins className="w-6 h-6 mr-3" />
             <div>
-              <div className="card card-dash bg-base-100 w-96 p-1 shadow-md shadow-secondary border-2 border-secondary">
-                <div>
-                  <p className='text-2xl text-secondary font-medium'>My Wishes</p>
-                  <p className='text-secondary font-mono'>
-                    Lorem ipsum dolor sit amet, consectetur adipisicing elit. Dolore eius rem...
-                  </p>
-                </div>
-              </div>
+              <p className="text-sm">Active Tokens</p>
+              <p className="text-lg font-medium">
+                {profile.active_tokens.toLocaleString()}
+              </p>
             </div>
+          </div>
 
-            <div className="w-full">
-              <div className="card bg-base-100 w-full shadow-sm">
-                <div className="card-body">
-                  <div className="rounded-lg bg-neutral text-neutral-content w-96">
-                    <div className="p-3">
-                      <p className='text-secondary text-2xl font-bold'>My Achivments</p>
-                    </div>
-                    <div className="card-body items-center text-center">
-                      <p className='text-2xl text-warning font-bold'>Club Achivments</p>
-                      <p className='text-7xl text-warning'><IoMdTrophy /></p>
-                    </div>
-                  </div>
-                </div>
-              </div>
+          <div className="flex items-center bg-secondary/10 text-secondary rounded-lg p-3">
+            <Hash className="w-6 h-6 mr-3" />
+            <div>
+              <p className="text-sm">University ID</p>
+              <p className="text-lg font-medium">#{profile.university_id}</p>
             </div>
-          </>
-        ) : (
-          <p className="text-error">No image or image failed to load.</p>
-        )}
+          </div>
+
+          <div className="flex items-center bg-accent/10 text-accent rounded-lg p-3">
+            <GraduationCap className="w-6 h-6 mr-3" />
+            <div>
+              <p className="text-sm">Grade Level</p>
+              <p className="text-lg font-medium">{profile.grade.grade_name}</p>
+            </div>
+          </div>
+
+          <div className="flex items-center bg-success/10 text-success rounded-lg p-3">
+            <User className="w-6 h-6 mr-3" />
+            <div>
+              <p className="text-sm">Profile ID</p>
+              <p className="text-lg font-medium">#{profile.id}</p>
+            </div>
+          </div>
+        </div>
+
+        {/* Extra Details */}
+        <div className="bg-base-100 border border-base-300 p-4 rounded-xl space-y-3">
+          <div className="flex items-center">
+            <Award className="w-5 h-5 mr-2 text-warning" />
+            <p className="text-base-content text-sm">
+              O'rtacha ball: {profile.gpa || "4.2"}
+            </p>
+          </div>
+        </div>
       </div>
     </div>
   );
