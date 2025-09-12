@@ -9,20 +9,38 @@ const Clubs = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [searchTerm, setSearchTerm] = useState("");
+  const [currentUserId, setCurrentUserId] = useState(null);
 
+  // ✅ Hozirgi user id ni olish
   useEffect(() => {
-    const fetchClub = async () => {
+    const fetchProfile = async () => {
       try {
-        const response = await axiosInstance.get("/api/v1/clubs/list/");
-        setClubs(response.data);
-      } catch (error) {
-        console.error("Error fetching club data:", error);
-        setError("Failed to load club data. Please try again later.");
-      } finally {
-        setLoading(false);
+        const res = await axiosInstance.get("/api/v1/students/profile/");
+        if (res.data.length > 0) {
+          setCurrentUserId(res.data[0].id); // user id saqlaymiz
+        }
+      } catch (err) {
+        console.error("User profile fetch error:", err);
       }
     };
-    fetchClub();
+    fetchProfile();
+  }, []);
+
+  // ✅ Klublarni olish
+  const fetchClubs = async () => {
+    try {
+      const response = await axiosInstance.get("/api/v1/clubs/list/");
+      setClubs(response.data);
+    } catch (error) {
+      console.error("Error fetching club data:", error);
+      setError("Failed to load club data. Please try again later.");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    fetchClubs();
   }, []);
 
   return (
@@ -41,6 +59,8 @@ const Clubs = () => {
         error={error}
         searchTerm={searchTerm}
         setSearchTerm={setSearchTerm}
+        currentUserId={currentUserId}  // ✅ prop qilib pastga uzatyapmiz
+        onUpdate={fetchClubs}          // ✅ follow/unfollow bo‘lganda yangilash uchun
       />
     </motion.div>
   );

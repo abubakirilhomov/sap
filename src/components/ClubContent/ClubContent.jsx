@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 import React, { useState } from "react";
 import { motion } from "framer-motion";
 import Loading from "../Loading/Loading";
@@ -53,6 +54,44 @@ const ClubContent = ({ clubs, loading, error, searchTerm, setSearchTerm }) => {
         )}
       </>
     );
+=======
+import React from "react";
+import ClubCard from "../ClubCard/ClubCard";
+
+const ClubContent = ({ clubs, loading, error, searchTerm, setSearchTerm, currentUserId, onUpdate }) => {
+  if (loading) return <p>Loading...</p>;
+  if (error) return <p className="text-red-500">{error}</p>;
+
+  const filteredClubs = clubs.filter((club) =>
+    club.name.toLowerCase().includes(searchTerm.toLowerCase())
+  );
+
+
+  
+  return (
+    <div>
+      <input
+        type="text"
+        placeholder="Search clubs..."
+        value={searchTerm}
+        onChange={(e) => setSearchTerm(e.target.value)}
+        className="input input-bordered mb-4 w-full"
+      />
+
+      <div className="grid sm:grid-cols-2 md:grid-cols-3 gap-6">
+        {filteredClubs.map((club) => (
+          <ClubCard
+            key={club.id}
+            club={club}
+            currentUserId={currentUserId}  // ✅ user idni uzatyapmiz
+            onClick={() => console.log("View club", club.id)}
+            onUpdate={onUpdate}            // ✅ follow/unfollow bo‘lganda qayta fetch
+          />
+        ))}
+      </div>
+    </div>
+  );
+>>>>>>> 439d21ca1f6bdbf57ab9e72d0296f3ce99134966
 };
 
 export default ClubContent;

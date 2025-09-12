@@ -48,7 +48,6 @@ const Sidebar = () => {
 
   const links = [
     { name: "Home", path: "/", icon: <FaHome className="mr-2" /> },
-  
     { name: "Clubs", path: "/clubs", icon: <MdGroups className="mr-2" /> },
     {
       name: "Shop",
