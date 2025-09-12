@@ -8,7 +8,6 @@ import App from "./App.jsx";
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import Dashboard from "./pages/Dashboard/Dashboard.jsx";
 import Profile from "./pages/Profile/Profile.jsx";
-import Posts from "./pages/Posts/Posts.jsx";
 import Shop from "./pages/Shop/Shop.jsx";
 import Login from "./pages/Login/Login.jsx";
 import Clubs from "./pages/Clubs/Clubs.jsx";
@@ -39,14 +38,7 @@ const router = createBrowserRouter([
           </PrivateRoute>
         ),
       },
-      {
-        path: "/posts",
-        element: (
-          <PrivateRoute>
-            <Posts />
-          </PrivateRoute>
-        ),
-      },
+     
       {
         path: "/shop",
         element: (
