@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { Link, useNavigate, useLocation } from "react-router-dom";
 import { BsFillLightningChargeFill } from "react-icons/bs";
-import { Link } from 'react-router-dom';
+// import { Link } from 'react-router-dom';
 
 const gradeColors = {
   Freshmen: "bg-blue-500",
