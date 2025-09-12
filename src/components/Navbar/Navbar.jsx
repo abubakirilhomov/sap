@@ -99,21 +99,9 @@ const Navbar = ({ tokens }) => {
             tabIndex={0}
             className="dropdown-content menu bg-base-100 rounded-box z-[1] w-52 p-2 shadow-sm"
           >
-<<<<<<< HEAD
-            <li>
-              <Link to="/profile">Profile</Link>
-            </li>
-            <li>
-              <Link to="/settings">Settings</Link>
-            </li>
-            <li>
-              <button onClick={handleLogoutClick}>Logout</button>
-            </li>
-=======
             <li><Link to={'/profile'}>Profile</Link></li>
             <li><a>Settings</a></li>
             <li><a>Logout</a></li>
->>>>>>> 439d21ca1f6bdbf57ab9e72d0296f3ce99134966
           </ul>
         </div>
       </div>
