@@ -51,7 +51,7 @@ const StudentsTable = ({ filterStudents }) => {
                                 <th className="text-primary-content font-bold text-lg">Name</th>
                                 <th className="text-primary-content font-bold text-lg">Surname</th>
                                 <th className="text-primary-content font-bold text-lg">Faculty</th>
-                                <th className="text-primary-content font-bold text-lg">Role</th>
+                                <th className="text-primary-content font-bold text-lg">Grade</th>
                             </tr>
                         </thead>
                         <tbody>
