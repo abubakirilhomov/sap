@@ -82,26 +82,25 @@ export default function UpcomingEvents({ events = [] }) {
 
   const handleRegister = async (eventId) => {
     try {
-      setLoadingId(eventId);
+      setLoadingId(eventId); 
       const res = await axios.post(
         "https://api.univibe.uz/api/v1/events/register/",
         { event_id: eventId }
       );
-      if (
-        res?.data?.registered === true ||
-        res?.data?.status === "registered"
-      ) {
-        toast.success("Registered successfully!");
+
+      if (res?.data?.registered === true || res?.data?.status === "registered") {
+        toast.success("Registered successfully!"); 
       } else {
-        toast.info("You are already registered or another status received.");
+        toast.info("You are already registered."); 
       }
     } catch (err) {
       console.error(err);
-      toast.error("Registration failed. Please try again.");
+      toast.error("Registration failed. Please try again."); 
     } finally {
-      setLoadingId(null);
+      setLoadingId(null); 
     }
   };
+
 
   return (
     <>

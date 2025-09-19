@@ -13,10 +13,12 @@ import Login from "./pages/Login/Login.jsx";
 import Clubs from "./pages/Clubs/Clubs.jsx";
 import Rating from "./pages/Rating/Rating.jsx";
 import PrivateRoute from "./hooks/PrivateRoute.jsx";
-import QrScanner from "./components/QrScanner/QrScanner.jsx";
 import QrCode from "./pages/QrCode/QrCode.jsx";
 import StudentsRaiting from "./pages/StudentsRaiting/StudentsRaiting.jsx";
+
+// toastify
 import { ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 const router = createBrowserRouter([
   {
@@ -65,8 +67,8 @@ const router = createBrowserRouter([
       },
       {
         path: "/rating",
-        element: <StudentsRaiting/>
-      }
+        element: <StudentsRaiting />,
+      },
     ],
   },
   {
@@ -75,29 +77,29 @@ const router = createBrowserRouter([
   },
 ]);
 
-document.title = import.meta.env.VITE_APP_TITLE
+document.title = import.meta.env.VITE_APP_TITLE;
 
 createRoot(document.getElementById("root")).render(
   <StrictMode>
-  <Provider store={store}>
-    <PersistGate loading={null} persistor={persistor}>
-      <>
-        <RouterProvider router={router} />
-        <ToastContainer
-          position="bottom-right"
-          autoClose={3000}
-          hideProgressBar={false}
-          newestOnTop={false}
-          closeOnClick
-          rtl={false}
-          pauseOnFocusLoss
-          draggable
-          pauseOnHover
-          theme="colored"
-        />
-      </>
-    </PersistGate>
-  </Provider>
-</StrictMode>
+    <Provider store={store}>
+      <PersistGate loading={null} persistor={persistor}>
+        <>
+          <RouterProvider router={router} />
 
+          {/* Global Toast Container */}
+          <ToastContainer
+            position="bottom-right"
+            autoClose={3000}       // 3 sekundda yopiladi
+            hideProgressBar={false}
+            newestOnTop={false}
+            closeOnClick
+            pauseOnFocusLoss
+            draggable
+            pauseOnHover
+            theme="colored"       // rangli (success - yashil, error - qizil, info - ko‘k)
+          />
+        </>
+      </PersistGate>
+    </Provider>
+  </StrictMode>
 );
