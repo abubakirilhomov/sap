@@ -48,7 +48,6 @@ const Sidebar = () => {
 
   const links = [
     { name: "Home", path: "/", icon: <FaHome className="mr-2" /> },
-    { name: "Posts", path: "/posts", icon: <FaBook className="mr-2" /> },
     { name: "Clubs", path: "/clubs", icon: <MdGroups className="mr-2" /> },
     {
       name: "Shop",
@@ -59,6 +58,7 @@ const Sidebar = () => {
     { name: "Profile", path: "/profile", icon: <FaUser className="mr-2" /> },
 
   ];
+
 
   return (
     <aside className="h-screen bg-base-200 p-4 shadow-lg border-r border-base-300">

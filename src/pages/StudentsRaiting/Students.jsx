@@ -19,11 +19,7 @@ const Students = ({ filterStudents }) => {
       setLoading(true);
       try {
         const { data } = await axiosInstance.get(`/api/v1/students/rating/?page=${page}&page_size=${pageSize}`);
-        const studentsWithIndex = data.results.map((student, idx) => ({
-          ...student,
-          originalIndex: (page - 1) * pageSize + idx,
-        }));
-        setStudents(studentsWithIndex);
+        setStudents(data.results);
         setTotalPages(Math.ceil(data.count / pageSize));
       } catch (err) {
         setError('Error fetching student data.');
@@ -41,7 +37,7 @@ const Students = ({ filterStudents }) => {
     .filter((student) =>
       student.name.toLowerCase().includes(filterStudents?.toLowerCase() || '')
     )
-    .sort((a, b) => a.originalIndex - b.originalIndex);
+    .sort((a, b) => a.id - b.id);
 
   if (loading) return <Loading />;
   if (error) return <div className="text-error p-4 bg-error/10 rounded-lg text-center">{error}</div>;
@@ -50,10 +46,10 @@ const Students = ({ filterStudents }) => {
     <div className="p-2 sm:p-4 max-w-7xl mx-auto">
       <div className="bg-base-100 rounded-2xl shadow-xl border border-primary/20">
         <div className="hidden md:block overflow-x-auto rounded-2xl">
-          {searchUsers.length === 0 ? <NoData /> : <StudentsTable students={searchUsers} page={page} pageSize={pageSize} isFiltered={isFiltered} />}
+          {searchUsers.length === 0 ? <NoData /> : <StudentsTable students={searchUsers} page={page} pageSize={pageSize} />}
         </div>
         <div className="block md:hidden space-y-4 p-4">
-          {searchUsers.length === 0 ? <NoData /> : <StudentsCardList students={searchUsers} page={page} pageSize={pageSize} isFiltered={isFiltered} />}
+          {searchUsers.length === 0 ? <NoData /> : <StudentsCardList students={searchUsers} page={page} pageSize={pageSize}     isFiltered={isFiltered} />}
         </div>
       </div>
       <div className="flex items-center justify-center my-6">

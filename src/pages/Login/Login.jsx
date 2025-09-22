@@ -2,8 +2,9 @@ import React, { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import axios from 'axios';
 import loginImg from "/logowhite.png";
-import { ToastContainer, toast, Flip } from 'react-toastify';
-import 'react-toastify/dist/ReactToastify.css';
+
+import { toast } from 'react-toastify';
+
 import { useDispatch } from 'react-redux';
 import { loginStart, loginSuccess, loginFailure } from '../../redux/slices/authSlice';
 import { useNavigate } from 'react-router-dom';
@@ -110,7 +111,7 @@ const Login = () => {
         ],
       }}
     >
-      <ToastContainer
+      {/* <ToastContainer
         position="bottom-right"
         autoClose={5000}
         hideProgressBar={false}
@@ -122,7 +123,7 @@ const Login = () => {
         pauseOnHover
         theme="dark"
         transition={Flip}
-      />
+      /> */}
       <motion.div
         className="flex flex-col lg:flex-row w-full max-w-5xl bg-base-100/50 backdrop-blur-xl rounded-3xl shadow-2xl overflow-hidden"
         variants={containerVariants}

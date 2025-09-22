@@ -1,104 +1,121 @@
-import React from 'react';
-import { motion } from 'framer-motion';
-import { UserRound, Medal } from 'lucide-react';
-import { useNavigate } from 'react-router-dom';
+import React from "react";
+import { motion } from "framer-motion";
+import { UserRound, Medal } from "lucide-react";
 
-const TopUserRatings = ({ ratings = [], onClick }) => {
-  const topRatings = ratings.slice(0, 5);
+export default function TopUserRatings({ ratings = [], onClick }) {
+  const top = ratings.slice(0, 5);
   const serverUrl = import.meta.env.VITE_API_URL;
-  const maxNameLength = 20;
-  const navigate = useNavigate()
-
-  const truncateName = (name) => {
-    if (!name) return 'User';
-    return name.length > maxNameLength ? `${name.slice(0, maxNameLength)}...` : name;
-  };
-
-  const medalColors = {
-    0: 'text-warning', 
-    1: 'text-base-300',
-    2: 'text-warning', 
-  };
 
   return (
     <motion.div
-      className="p-4 max-w-[350px] sm:p-6 rounded-2xl shadow-2xl border w-full sm:max-w-xs md:max-w-sm lg:max-w-xs relative overflow-hidden"
-      role="region"
-      aria-label="User Ratings Section"
+      className="
+        w-full 
+        rounded-2xl 
+        shadow-2xl 
+        border border-base-300 
+        bg-base-100
+        p-6
+        /* 👉 make container BIG on phones */
+        max-w-full
+        sm:max-w-md
+      "
       initial={{ opacity: 0, y: 40 }}
       animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.6, delay: 0.2 }}
-   
-
+      transition={{ duration: 0.6 }}
     >
-      {/* Subtle background glow effect */}
-      <div className="absolute inset-0 opacity-50 pointer-events-none" />
-
-      <h2 className="text-xl sm:text-2xl font-bold mb-4 text-base-content/90 flex items-center gap-2" role="heading" aria-level="2">
-        <Medal className="w-6 h-6 text-primary" /> Top 5 Champions
+      <h2
+        className="
+          text-3xl        /* 📱 big title on mobile */
+          sm:text-2xl    /* shrink slightly on >=640px */
+          font-extrabold 
+          mb-6 
+          text-center 
+          text-primary
+        "
+      >
+        🏆 Top 5 Champions
       </h2>
 
-      <ul className="space-y-3">
-        {topRatings.length > 0 ? (
-          topRatings.map((rating, index) => (
+      <ul className="space-y-6 sm:space-y-4">
+        {top.length ? (
+          top.map((u, i) => (
             <motion.li
-              key={index}
-              className="flex items-center gap-3 sm:gap-4 bg-base-200/80 rounded-lg md:px-3 sm:px-4 md:py-3 py-1 hover:bg-base-300/90 cursor-pointer transition-all duration-300"
-              whileHover={{ scale: 1.03, boxShadow: '0 4px 12px rgba(0, 0, 0, 0.15)' }}
-              whileTap={{ scale: 0.98 }}
+              key={i}
+              whileHover={{ scale: 1.03 }}
+              className="
+                flex items-center gap-5 sm:gap-4
+                bg-base-200/80
+                rounded-xl
+                p-4         /* 📱 bigger padding */
+                sm:p-3
+                hover:bg-base-300/90
+                transition
+              "
               onClick={onClick}
             >
+              {/* Rank number / medal */}
               <span
-                className={`${index < 3 ? medalColors[index] : 'badge-primary'} text-base sm:text-3xl w-20 md:h-20 sm:w-8 sm:h-8 flex items-center justify-center font-bold`}
+                className="
+                  w-14 h-14       /* 📱 larger circle */
+                  sm:w-10 sm:h-10
+                  flex items-center justify-center
+                  rounded-full
+                  bg-primary/20 text-primary
+                  text-2xl sm:text-lg
+                  font-bold
+                "
               >
-                {index < 3 ? (
-                  <Medal className="" size={20} />
-                ) : (
-                  index + 1
-                )}
+                {i + 1}
               </span>
 
-              {rating.image ? (
+              {/* Avatar */}
+              {u.image ? (
                 <img
-                  src={`${serverUrl}${rating.image}`}
-                  alt={rating.name || 'User'}
-                  className="w-8 h-8 sm:w-10 sm:h-10 rounded-full object-cover border-2 border-base-300/50 shadow-sm"
+                  src={`${serverUrl}${u.image}`}
+                  alt={u.name || "User"}
+                  className="
+                    w-16 h-16          /* 📱 large avatar */
+                    sm:w-12 sm:h-12
+                    rounded-full object-cover
+                    border-2 border-primary/30
+                  "
                 />
               ) : (
-                <div className="w-8 h-8 sm:w-10 sm:h-10 rounded-full bg-base-300/50 flex items-center justify-center text-sm text-base-content/50">
-                  <UserRound className="w-4 h-4 sm:w-5 sm:h-5" />
+                <div
+                  className="
+                    w-16 h-16
+                    sm:w-12 sm:h-12
+                    rounded-full
+                    bg-base-300
+                    flex items-center justify-center
+                    text-base-content/60
+                  "
+                >
+                  <UserRound className="w-8 h-8 sm:w-6 sm:h-6" />
                 </div>
               )}
 
+              {/* Name & grade */}
               <div className="flex-1 min-w-0">
-                <p className="font-semibold text-sm sm:text-base line-clamp-1 text-base-content/90">
-                  {truncateName(rating.name)}
+                <p className="font-semibold text-lg sm:text-base truncate">
+                  {u.name || "User"}
                 </p>
-                <p className="text-xs sm:text-sm text-base-content/60 line-clamp-1 font-medium">
-                  {rating.grade?.grade_name || 'No grade'}
+                <p className="text-base sm:text-sm text-base-content/70">
+                  {u.grade?.grade_name || "No grade"}
                 </p>
               </div>
+
+              {i < 3 && (
+                <Medal className="text-warning w-7 h-7 sm:w-5 sm:h-5" />
+              )}
             </motion.li>
           ))
         ) : (
-          <li className="text-base-content/70 text-sm sm:text-base">No champions yet!</li>
+          <li className="text-center text-base-content/60 py-6">
+            No champions yet!
+          </li>
         )}
       </ul>
-
-      {ratings.length > 5 && (
-        <div className="text-end mt-4">
-          <motion.button
-            className="btn btn-sm btn-outline btn-accent text-xs sm:text-sm font-medium"
-            onClick={onClick || navigate('/leaderboard')}
-            whileHover={{ scale: 1.05 }}
-            whileTap={{ scale: 0.95 }}
-          >
-            View full leaderboard →
-          </motion.button>
-        </div>
-      )}
     </motion.div>
   );
-};
-
-export default TopUserRatings;
+}
