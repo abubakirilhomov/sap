@@ -17,6 +17,8 @@ const StudentsTable = ({ students, page, pageSize }) => {
       variants={tableVariants}
       className="table w-full shadow-2xl"
     >
+
+ 
       <thead className="bg-gradient-to-r  from-primary to-secondary">
         <tr>
           <th className="text-primary-content font-bold text-lg">Rank</th>
