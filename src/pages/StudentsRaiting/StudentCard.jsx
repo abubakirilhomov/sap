@@ -22,7 +22,6 @@ const getGradeColor = (grade) => {
 };
 
 const StudentCard = ({ item, index, isFiltered }) => {
-  // ✅ Make sure relative image paths from API become full URLs
   const BASE_URL = import.meta.env.VITE_API_URL || "https://api.univibe.uz";
   const imageUrl =
     item.image && !item.image.startsWith("http")
@@ -46,7 +45,6 @@ const StudentCard = ({ item, index, isFiltered }) => {
           </div>
         </div>
 
-        {/* Student Info */}
         <div className="flex-1">
           <div className="flex justify-between items-center">
             <p className="font-bold text-lg">
