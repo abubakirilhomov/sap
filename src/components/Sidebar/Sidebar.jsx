@@ -56,7 +56,6 @@ const Sidebar = () => {
     },
     { name: "Rating", path: "/rating", icon: <MdLeaderboard className="mr-2" /> },
     { name: "Profile", path: "/profile", icon: <FaUser className="mr-2" /> },
-
   ];
 
 

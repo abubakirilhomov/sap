@@ -21,11 +21,13 @@ const rowVariants = {
 };
 
 const StudentRow = ({ item, index }) => {
+
+  console.log("item:", item);
   return (
     <motion.tr
       variants={rowVariants}
       whileHover={{ scale: 1.01, backgroundColor: "rgba(0,0,0,0.03)" }}
-      className="hover:bg-base-200 transition-all"
+      className="hover:bg-base-200 transition-all "
     >
       <td className="text-center font-bold text-lg">{getMedalEmoji(index)}</td>
       <td>
@@ -52,6 +54,14 @@ const StudentRow = ({ item, index }) => {
           )}`}
         >
           {item?.grade?.grade_name}
+        </p>
+      </td>
+      <td>
+        <p
+          className="inline-block px-3 py-1 rounded-full text-sm font-semibold bg-primary text-black"
+        >
+          {item?.inactive_tokens
+}
         </p>
       </td>
     </motion.tr>

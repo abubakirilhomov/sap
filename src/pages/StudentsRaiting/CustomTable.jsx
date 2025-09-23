@@ -42,8 +42,8 @@ const StudentsTable = ({ filterStudents }) => {
 
     return (
         <div className="rounded-2xl p-1">
-            <div className="bg-base-100 rounded-2xl shadow-xl border border-primary/20">
-                <div className="overflow-x-auto rounded-2xl">
+            <div className="bg-base-100 rounded-2xl shadow-xl border border-primary/20 ">
+                <div className="rounded-2xl">
                     <table className="table table-zebra">
                         <thead className="bg-gradient-to-r from-primary to-secondary">
                             <tr>

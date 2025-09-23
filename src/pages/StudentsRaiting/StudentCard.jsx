@@ -35,6 +35,9 @@ const StudentCard = ({ item, index }) => {
             <p className="font-bold text-lg">{item.name} {item.surname}</p>
             <p className="font-bold text-lg">{getMedalEmoji(index)}</p>
           </div>
+          <div>
+            <p>{item.inactive_tokens}</p>
+          </div>
           <p className="text-sm text-base-content/70">{item.faculty?.faculty_namegit}</p>
           <p className={`inline-block mt-2 px-3 py-1 rounded-full text-sm font-semibold ${getGradeColor(item?.grade?.grade_name)}`}>
             {item?.grade?.grade_name}

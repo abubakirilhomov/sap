@@ -21,6 +21,7 @@ const Students = ({ filterStudents }) => {
         const { data } = await axiosInstance.get(`/api/v1/students/rating/?page=${page}&page_size=${pageSize}`);
         setStudents(data.results);
         setTotalPages(Math.ceil(data.count / pageSize));
+        console.log("data:", data)
       } catch (err) {
         setError('Error fetching student data.');
       } finally {
@@ -43,7 +44,7 @@ const Students = ({ filterStudents }) => {
   if (error) return <div className="text-error p-4 bg-error/10 rounded-lg text-center">{error}</div>;
 
   return (
-    <div className="p-2 sm:p-4 max-w-7xl mx-auto">
+    <div className="p-2 sm:p-4 max-w-7xl mx-auto m-10">
       <div className="bg-base-100 rounded-2xl shadow-xl border border-primary/20">
         <div className="hidden md:block overflow-x-auto rounded-2xl">
           {searchUsers.length === 0 ? <NoData /> : <StudentsTable students={searchUsers} page={page} pageSize={pageSize} />}

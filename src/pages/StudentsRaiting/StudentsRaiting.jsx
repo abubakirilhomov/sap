@@ -1,56 +1,96 @@
-import React, { useState } from 'react';
-import StudentsTable from './Students';
+import React, { useState, useEffect } from 'react';
+import axiosInstance from '../../axiosInstance/axiosInstance';
+import CustomPagination from '../CustomPagination/CustomPagination';
+import Loading from '../../components/Loading/Loading';
+import StudentsTable from './StudentsTable';
+import StudentsCardList from './StudentsCardList';
+import NoData from './NoData';
 
-const StudentsRaiting = () => {
-  const [searchTerm, setSearchTerm] = useState('');
+const Students = ({ filterStudents }) => {
+  const [loading, setLoading] = useState(true);
+  const [students, setStudents] = useState([]);
+  const [page, setPage] = useState(1);
+  const pageSize = 12;
+  const [totalPages, setTotalPages] = useState(1);
+  const [error, setError] = useState(null);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      setLoading(true);
+      try {
+        const { data } = await axiosInstance.get(
+          `/api/v1/students/rating/?page=${page}&page_size=${pageSize}`
+        );
+
+        const sortedStudents = [...data.results].sort(
+          (a, b) => b.inactive_tokens - a.inactive_tokens
+        );
+
+        setStudents(sortedStudents);
+        setTotalPages(Math.ceil(data.count / pageSize));
+        console.log('data:', data);
+      } catch (err) {
+        setError('Error fetching student data.');
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchData();
+  }, [page]);
+
+  const isFiltered = Boolean(filterStudents?.trim());
+
+  const searchUsers = students
+    .filter((student) =>
+      student.name.toLowerCase().includes(filterStudents?.toLowerCase() || '')
+    )
+    .sort((a, b) => b.inactive_tokens - a.inactive_tokens);
+
+  if (loading) return <Loading />;
+  if (error)
+    return (
+      <div className="text-error p-4 bg-error/10 rounded-lg text-center">
+        {error}
+      </div>
+    );
 
   return (
-    <div className="flex flex-col min-h-screen p-4 sm:p-6 md:p-8 max-w-7xl mx-auto">
-      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
-        <p
-          className="text-lg sm:text-xl md:text-2xl lg:text-3xl text-center font-bold text-base-content/90"
-          role="heading"
-          aria-level="1"
-        >
-          Students Rating
-        </p>
-
-        <div className="flex items-center w-full sm:w-auto">
-          <label className="input input-info input-bordered flex items-center sm:w- w-full max-w-xs sm:max-w-sm lg:w-96">
-            <svg
-              className="h-4 w-4 opacity-50 mr-2"
-              xmlns="http://www.w3.org/2000/svg"
-              viewBox="0 0 24 24"
-              aria-hidden="true"
-            >
-              <g
-                strokeLinejoin="round"
-                strokeLinecap="round"
-                strokeWidth="2.5"
-                fill="none"
-                stroke="currentColor"
-              >
-                <circle cx="11" cy="11" r="8"></circle>
-                <path d="m21 21-4.3-4.3"></path>
-              </g>
-            </svg>
-            <input
-              type="search"
-              className="grow text-sm sm:text-base"
-              placeholder="Search users..."
-              value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)}
-              aria-label="Search students by name"
+    <div className="p-2 sm:p-4 max-w-7xl mx-auto">
+      <div className="bg-base-100 rounded-2xl shadow-xl border border-primary/20">
+        <div className="hidden md:block overflow-x-auto rounded-2xl">
+          {searchUsers.length === 0 ? (
+            <NoData />
+          ) : (
+            <StudentsTable
+              students={searchUsers}
+              page={page}
+              pageSize={pageSize}
             />
-          </label>
+          )}
+        </div>
+        <div className="block md:hidden space-y-4 p-4">
+          {searchUsers.length === 0 ? (
+            <NoData />
+          ) : (
+            <StudentsCardList
+              students={searchUsers}
+              page={page}
+              pageSize={pageSize}
+              isFiltered={isFiltered}
+            />
+          )}
         </div>
       </div>
-
-      <div className="mt-4 sm:mt-6 md:mt-8 flex-1">
-        <StudentsTable filterStudents={searchTerm} />
+      <div className="flex items-center justify-center my-6">
+        <CustomPagination
+          currentPage={page}
+          totalPages={totalPages}
+          onPageChange={setPage}
+        />
       </div>
     </div>
   );
 };
 
-export default StudentsRaiting;
+export default Students;

@@ -22,14 +22,21 @@ const Login = () => {
   const getApiEndpoint = (role) => {
     switch (role) {
       case 'club':
-        return { login: `${baseUrl}/api/v1/clubs/auth/login/`, info: `${baseUrl}/api/v1/clubs/info/` };
+        return {
+          login: `${baseUrl}/api/v1/clubs/auth/login/`,
+          info: `${baseUrl}/api/v1/clubs/profile/` 
+        };
       case 'admin':
         return { login: `${baseUrl}/api/v1/staff/auth/login/`, info: null };
       case 'student':
       default:
-        return { login: `${baseUrl}/api/v1/students/auth/login/`, info: `${baseUrl}/api/v1/students/profile/` };
+        return {
+          login: `${baseUrl}/api/v1/students/auth/login/`,
+          info: `${baseUrl}/api/v1/students/profile/`
+        };
     }
   };
+
 
   const onSubmit = async (data) => {
     setLoading(true);
@@ -41,6 +48,8 @@ const Login = () => {
     try {
       const { login: loginUrl, info: infoUrl } = getApiEndpoint(role);
       const loginResponse = await axios.post(loginUrl, requestData);
+
+      console.log("login response:", loginResponse.data);
       const refreshToken = loginResponse.data.refresh_token;
       const accessToken = loginResponse.data.access_token;
       console.log('Login response:', loginResponse.data);
@@ -53,6 +62,7 @@ const Login = () => {
         const infoResponse = await axios.get(infoUrl, {
           headers: { Authorization: `Bearer ${accessToken}` },
         });
+
         userInfo = infoResponse.data;
       }
 
@@ -87,6 +97,8 @@ const Login = () => {
       setLoading(false);
     }
   };
+
+
 
   const containerVariants = {
     hidden: { opacity: 0, y: 50 },
@@ -151,9 +163,8 @@ const Login = () => {
             <input
               type="radio"
               name="role_tabs"
-              className={`tab rounded-2xl font-semibold flex-1 text-sm sm:text-base duration-300 ${
-                role === 'student' ? 'tab-active bg-secondary/70 text-white shadow-md border-2 border-secondary' : 'bg-base-200 text-base-content/70 hover:bg-base-300'
-              }`}
+              className={`tab rounded-2xl font-semibold flex-1 text-sm sm:text-base duration-300 ${role === 'student' ? 'tab-active bg-secondary/70 text-white shadow-md border-2 border-secondary' : 'bg-base-200 text-base-content/70 hover:bg-base-300'
+                }`}
               aria-label="Student"
               checked={role === 'student'}
               onChange={() => setRole('student')}
@@ -161,9 +172,8 @@ const Login = () => {
             <input
               type="radio"
               name="role_tabs"
-              className={`tab rounded-2xl flex-1 font-semibold text-sm sm:text-base transition-all duration-300 ${
-                role === 'club' ? 'tab-active bg-secondary/70 text-white shadow-md border-2 border-secondary' : 'bg-base-200 text-base-content/70 hover:bg-base-300'
-              }`}
+              className={`tab rounded-2xl flex-1 font-semibold text-sm sm:text-base transition-all duration-300 ${role === 'club' ? 'tab-active bg-secondary/70 text-white shadow-md border-2 border-secondary' : 'bg-base-200 text-base-content/70 hover:bg-base-300'
+                }`}
               aria-label="Club"
               checked={role === 'club'}
               onChange={() => setRole('club')}
@@ -171,9 +181,8 @@ const Login = () => {
             <input
               type="radio"
               name="role_tabs"
-              className={`tab rounded-2xl flex-1 font-semibold text-sm sm:text-base transition-all duration-300 ${
-                role === 'admin' ? 'tab-active bg-secondary/70 text-white shadow-md border-2 border-secondary' : 'bg-base-200 text-base-content/70 hover:bg-base-300'
-              }`}
+              className={`tab rounded-2xl flex-1 font-semibold text-sm sm:text-base transition-all duration-300 ${role === 'admin' ? 'tab-active bg-secondary/70 text-white shadow-md border-2 border-secondary' : 'bg-base-200 text-base-content/70 hover:bg-base-300'
+                }`}
               aria-label="Admin"
               checked={role === 'admin'}
               onChange={() => setRole('admin')}
