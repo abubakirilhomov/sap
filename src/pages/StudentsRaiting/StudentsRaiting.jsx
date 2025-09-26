@@ -24,7 +24,7 @@ const Students = ({ filterStudents }) => {
         );
 
         const sortedStudents = [...data.results].sort(
-          (a, b) => b.inactive_tokens - a.inactive_tokens
+          (a, b) => b.total_coins - a.total_coins
         );
 
         setStudents(sortedStudents);
@@ -60,7 +60,7 @@ const Students = ({ filterStudents }) => {
     .filter((student) =>
       student.name.toLowerCase().includes(filterStudents?.toLowerCase() || '')
     )
-    .sort((a, b) => b.inactive_tokens - a.inactive_tokens);
+    .sort((a, b) => b.total_coins - a.total_coins);
 
   if (loading) return <Loading />;
   if (error)
@@ -92,7 +92,7 @@ const Students = ({ filterStudents }) => {
                 <tr>
                   <td className="text-base-content font-bold text-lg">{myRating.position}</td>
                   <td className='text-base-content  font-bold text-lg'>{myRating.name} {myRating.surname}</td>
-                  <td className='text-base-content  font-bold text-lg '><span className='pl-1 pr-1 bg-warning  text-primary-content rounded-2xl'>{myRating.inactive_tokens}</span></td>
+                  <td className='text-base-content  font-bold text-lg '><span className='pl-1 pr-1 bg-warning  text-primary-content rounded-2xl'>{myRating.total_coins}</span></td>
                   <th className='text-base-content  font-bold text-lg'>{myRating.user_id}</th>
 
                 </tr>

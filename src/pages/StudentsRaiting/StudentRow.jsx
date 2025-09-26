@@ -60,7 +60,7 @@ const StudentRow = ({ item, index }) => {
         <p
           className="inline-block px-3 py-1 rounded-full text-sm font-semibold bg-primary text-black"
         >
-          {item?.inactive_tokens
+          {item?.total_coins
 }
         </p>
       </td>

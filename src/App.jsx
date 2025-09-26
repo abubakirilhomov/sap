@@ -10,6 +10,8 @@ import { fetchUserInfo } from './redux/slices/authThunk';
 
 function App() {
   const dispatch = useDispatch();
+
+  
   const { accessToken, role } = useSelector((state) => state.auth);
   console.log(role)
   const isRehydrated = useSelector((state) => state.auth._persist?.rehydrated || false);
@@ -27,6 +29,8 @@ function App() {
         return null;
     }
   };
+
+
 
   useEffect(() => {
     if (isRehydrated && accessToken && role) {

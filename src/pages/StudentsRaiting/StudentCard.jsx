@@ -1,13 +1,11 @@
 import React from "react";
 import studentImage from "../../../public/students.png";
 
-// Medal icon for top 3 ranks
 const getMedalEmoji = (index, isFiltered) => {
   if (isFiltered) return "";
   return ["🥇", "🥈", "🥉"][index] || index + 1;
 };
 
-// Grade color badges
 const getGradeColor = (grade) => {
   switch (grade) {
     case "Senior":
@@ -31,7 +29,6 @@ const StudentCard = ({ item, index, isFiltered }) => {
   return (
     <div className="bg-base-100 border border-base-300 rounded-lg p-4 shadow-sm hover:shadow-md transition-shadow">
       <div className="flex items-center gap-3">
-        {/* Avatar */}
         <div className="avatar">
           <div className="mask mask-squircle h-12 w-12 ring-2 ring-primary ring-offset-2 ring-offset-base-100">
             <img
@@ -54,7 +51,7 @@ const StudentCard = ({ item, index, isFiltered }) => {
           </div>
 
           <p className="text-base-content font-medium">
-            Coins: {item.inactive_tokens}
+            Coins: {item.total_coins}
           </p>
 
           <p className="text-sm text-base-content/70">
