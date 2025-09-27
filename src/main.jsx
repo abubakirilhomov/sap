@@ -16,9 +16,9 @@ import PrivateRoute from "./hooks/PrivateRoute.jsx";
 import QrCode from "./pages/QrCode/QrCode.jsx";
 import StudentsRaiting from "./pages/StudentsRaiting/StudentsRaiting.jsx";
 
-// toastify
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import DashboardClub from "./pages/DashboardClubs/DashboardClub.jsx";
 
 const router = createBrowserRouter([
   {
@@ -54,6 +54,14 @@ const router = createBrowserRouter([
         element: (
           <PrivateRoute>
             <Clubs />
+          </PrivateRoute>
+        ),
+      },
+      {
+        path: "/dashboard",
+        element: (
+          <PrivateRoute>
+            <DashboardClub />
           </PrivateRoute>
         ),
       },
