@@ -19,16 +19,12 @@ const Sidebar = () => {
   const navigate = useNavigate();
   const location = useLocation();
 
-  // ➜ redux’dan foydalanuvchi maʼlumotlari
-  const user = useSelector((state) =>
-    state?.auth?.userInfo === null ? null : state?.auth?.userInfo[0]
-  );
-  const role = useSelector((state) => state?.auth?.role); // ← role ni olish
+  const user = useSelector((state) => state?.auth?.userInfo);
 
+  const role = useSelector((state) => state?.auth?.role); 
   const [imgError, setImgError] = useState(false);
 
-  const gradeName =
-    user && user?.grade?.grade_name ? user.grade.grade_name : "Default";
+  const gradeName = user?.grade?.grade_name || "Default";
   const gradeColor = gradeColors[gradeName] || gradeColors.Default;
 
   const handleLogoutClick = () => {
@@ -45,7 +41,6 @@ const Sidebar = () => {
     document.getElementById("logout_modal").close();
   };
 
-  // 🔑 Role ga qarab ko‘rinadigan sahifalar
   const links =
     role === "student"
       ? [
@@ -62,27 +57,28 @@ const Sidebar = () => {
       : role === "club"
       ? [
           { name: "Dashboard", path: "/dashboard", icon: <FaHome className="mr-2" /> },
-          { name: "Profile", path: "/profile", icon: <FaUser className="mr-2" /> },
+          { name: "Profile", path: "/club-profile", icon: <FaUser className="mr-2" /> },
         ]
-      : []; 
+      : [];
 
   return (
     <aside className="h-screen bg-base-200 p-4 shadow-lg border-r border-base-300">
       <nav className="flex flex-col h-full justify-between">
         <div>
           <div
-            onClick={() => navigate("/profile")}
+            onClick={() => navigate("/club-profile")}
             className="flex flex-col items-center mb-4 cursor-pointer"
           >
+            {/* Profile Image Section */}
             {user?.image && !imgError ? (
               <div className="avatar">
                 <div
                   className={`w-24 rounded-full ring ${gradeColor} ring-offset-2 ring-offset-base-100`}
                 >
                   <img
-                    src={user.image}
+                    src={user?.image} // Display the user's profile image
                     alt={`${user?.name || "User"} ${user?.surname || ""}`}
-                    onError={() => setImgError(true)}
+                    onError={() => setImgError(true)} // Set error state if image fails
                   />
                 </div>
               </div>
@@ -91,7 +87,7 @@ const Sidebar = () => {
                 className={`avatar avatar-placeholder ${gradeColor} text-neutral-content rounded-full w-24 h-24`}
               >
                 <div className="w-full h-full text-3xl">
-                  {user?.name?.[0] || "?"}
+                  {user?.name?.[0] || "?"} {/* Fallback to the first letter of the name */}
                 </div>
               </div>
             )}
@@ -101,6 +97,7 @@ const Sidebar = () => {
             </p>
           </div>
 
+          {/* Sidebar Links */}
           <ul className="space-y-2 mt-5">
             {links.map((link) => (
               <li key={link.name} className="group">
@@ -132,7 +129,7 @@ const Sidebar = () => {
         </div>
       </nav>
 
-      {/* Modal */}
+      {/* Logout Confirmation Modal */}
       <dialog id="logout_modal" className="modal" aria-label="Logout Confirmation">
         <div className="modal-box">
           <h3 className="font-bold text-lg">Confirm Logout</h3>

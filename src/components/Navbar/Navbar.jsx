@@ -47,13 +47,8 @@ const Navbar = ({ tokens }) => {
 
   return (
     <div className="bg-base-200 hidden md:flex navbar shadow-sm">
-      {/* Left */}
       <div className="navbar-start">
-        <input
-          className="input input-md"
-          placeholder="Search"
-          type="text"
-        />
+        
       </div>
 
      

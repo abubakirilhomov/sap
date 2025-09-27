@@ -19,6 +19,7 @@ import StudentsRaiting from "./pages/StudentsRaiting/StudentsRaiting.jsx";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import DashboardClub from "./pages/DashboardClubs/DashboardClub.jsx";
+import ClubProfile from "./pages/Club-profile/ClubProfile.jsx";
 
 const router = createBrowserRouter([
   {
@@ -62,6 +63,14 @@ const router = createBrowserRouter([
         element: (
           <PrivateRoute>
             <DashboardClub />
+          </PrivateRoute>
+        ),
+      },
+      {
+        path: "/club-profile",
+        element: (
+          <PrivateRoute>
+            <ClubProfile />
           </PrivateRoute>
         ),
       },
