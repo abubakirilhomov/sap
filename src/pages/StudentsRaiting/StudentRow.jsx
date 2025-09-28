@@ -35,11 +35,16 @@ const StudentRow = ({ item, index }) => {
           <div className="avatar">
             <div className="mask mask-squircle h-10 w-10 ring-2 ring-primary ring-offset-2 ring-offset-base-100">
               <img
-                src={item?.image || studentImage}
-                onError={(e) => (e.target.src = studentImage)}
+                src={
+                  item.image
+                    ? `${import.meta.env.VITE_API_URL}${item.image}`
+                    : studentImage
+                }
+                onError={(e) => (e.currentTarget.src = studentImage)}
                 alt={`${item.name} avatar`}
                 className="object-cover"
               />
+
             </div>
           </div>
           <p className="font-bold">{item.name}</p>
@@ -61,7 +66,7 @@ const StudentRow = ({ item, index }) => {
           className="inline-block px-3 py-1 rounded-full text-sm font-semibold bg-primary text-black"
         >
           {item?.total_coins
-}
+          }
         </p>
       </td>
     </motion.tr>
